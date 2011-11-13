@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:title="Manage API key" android:visible="true" android:id="@+id/input_api_key_option" android:titleCondensed="Manage API key"></item> 
+</menu>

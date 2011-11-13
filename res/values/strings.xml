@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="hello">Quick claim</string>
+    <string name="app_name">SevedroidProject</string>
+    <string name="apikey_desc">API_KEY is required for you to authenticate yourself with the Severa server. You can get your API_KEY by logging into severa (using a web browser) and Going to Tools -&gt; Personal -&gt; Severa API (Tick the box and click the button to generate the key)</string>
+    <string name="apikey_input_title">Enter API KEY below</string>
+    <string name="apikey_input_submit">Save your key</string>
+    <string name="apikey_test_submit">Finish Configuration</string>
+    <string name="apikey_firstname_text">First name</string>
+    <string name="apikey_lastname_text">Last name</string>
+    <string name="apikey_show_password_checkbox">Show password</string>
+    <string name="claim_amount_text">Custom amount</string>
+    <string name="claim_projectname_text">Claim for project</string>
+    <string name="claim_phasename_text">Project task</string>
+    <string name="claim_explanation_text">Work description</string>
+    <string name="claim_worktype_text">Work type</string>
+    <string name="claim_button_regular_text">Claim</string>
+    <string name="claim_button_overtime_text">Claim overtime</string>
+    <string name="claim_change_date_button_text">Change date</string>
+    <string name="menuitem_options">Options</string>
+    <string name="amount_minutes_text">Minutes</string>
+    <string name="amount_hours_text">Hours</string>
+</resources>

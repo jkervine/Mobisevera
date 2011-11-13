@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent" android:layout_height="fill_parent">
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    >
+<TextView  
+    android:layout_width="fill_parent" 
+    android:layout_height="wrap_content" 
+    android:text="@string/hello"
+    />
+<LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/linearLayout1">
+    <Button android:layout_height="wrap_content" android:id="@+id/button1hour" android:text="1" android:layout_width="wrap_content"></Button>
+    <Button android:text="2" android:id="@+id/button2hour" android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
+    <Button android:text="3" android:id="@+id/button3hour" android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
+    <Button android:text="4" android:id="@+id/button4hour" android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
+    <Button android:text="5" android:id="@+id/button5hour" android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
+</LinearLayout>
+<LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/linearLayout1">
+    <Button android:layout_height="wrap_content" android:id="@+id/button6hour" android:text="6" android:layout_width="wrap_content"></Button>
+    <Button android:text="7" android:id="@+id/button7hour" android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
+    <Button android:text="8" android:id="@+id/button8hour" android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
+    <Button android:text="9" android:id="@+id/button9hour" android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
+    <Button android:text="10" android:id="@+id/button10hour" android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
+	<Button android:text="+30min" android:id="@+id/buttonplus30min" android:layout_width="wrap_content" android:layout_height="wrap_content"/> 
+</LinearLayout>
+<TextView android:text="@string/claim_amount_text" android:id="@+id/claim_amount_title" android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
+<!-- The amounts of time row -->
+<LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/linearLayoutTimeAmount">
+    <TextView android:id="@+id/textView3" android:layout_width="wrap_content" android:textAppearance="?android:attr/textAppearanceMedium" android:layout_height="wrap_content" android:text="@string/amount_hours_text"></TextView>
+	<EditText android:layout_width="match_parent" android:id="@+id/hours_amount" android:layout_height="wrap_content" android:inputType="number"></EditText>
+	<TextView android:id="@+id/textView4" android:layout_width="wrap_content" android:textAppearance="?android:attr/textAppearanceMedium" android:layout_height="wrap_content" android:text="@string/amount_minutes_text"></TextView>
+	<EditText android:layout_width="match_parent" android:id="@+id/minutes_amount" android:layout_height="wrap_content" android:inputType="number"></EditText>
+</LinearLayout>
+<!-- The spinners for selecting the project / phase and edittext for explanation -->
+<TextView android:textAppearance="?android:attr/textAppearanceSmall" android:layout_height="wrap_content" android:text="@string/claim_projectname_text" android:layout_width="wrap_content" android:id="@+id/textView2"></TextView>
+<LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content">
+<Spinner android:id="@+id/projectnamespinner" android:layout_width="match_parent" android:layout_height="wrap_content"></Spinner>
+<ProgressBar style="?android:attr/progressBarStyleSmall" android:id="@+id/projectsProgressBar" android:layout_width="wrap_content" android:layout_height="wrap_content"></ProgressBar>
+</LinearLayout>
+<TextView android:textAppearance="?android:attr/textAppearanceSmall" android:layout_height="wrap_content" android:text="@string/claim_phasename_text" android:layout_width="wrap_content" android:id="@+id/textView1"></TextView>
+<LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content">
+<Spinner android:id="@+id/phasenamespinner" android:layout_width="match_parent" android:layout_height="wrap_content"></Spinner>
+<ProgressBar style="?android:attr/progressBarStyleSmall" android:id="@+id/phasesProgressBar" android:layout_width="wrap_content" android:layout_height="wrap_content"></ProgressBar>
+</LinearLayout>
+<TextView android:textAppearance="?android:attr/textAppearanceSmall" android:layout_height="wrap_content" android:text="@string/claim_worktype_text" android:layout_width="wrap_content" android:id="@+id/claim_textview_type"></TextView>
+<LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content">
+<Spinner android:id="@+id/worktypespinner" android:layout_width="match_parent" android:layout_height="wrap_content"></Spinner>
+<ProgressBar style="?android:attr/progressBarStyleSmall" android:id="@+id/workTypeProgressBar" android:layout_width="wrap_content" android:layout_height="wrap_content"></ProgressBar>
+</LinearLayout>
+<TextView android:textAppearance="?android:attr/textAppearanceSmall" android:layout_height="wrap_content" android:text="@string/claim_explanation_text" android:layout_width="wrap_content" android:id="@+id/textViewExplanationtitle"></TextView>
+<EditText android:id="@+id/explanation_text" android:layout_height="wrap_content" android:layout_width="match_parent"/>
+<LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:id="@+id/linearLayout2">
+    <Button android:layout_height="wrap_content" android:id="@+id/button_claim" android:text="@string/claim_button_regular_text" android:layout_width="wrap_content"></Button>
+    <Button android:layout_height="wrap_content" android:id="@+id/button_claim_overtime" android:text="@string/claim_button_overtime_text" android:layout_width="wrap_content"></Button>
+    <Button android:text="@string/claim_change_date_button_text" android:id="@+id/change_date_button" android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
+</LinearLayout>
+</LinearLayout>
+</ScrollView>
