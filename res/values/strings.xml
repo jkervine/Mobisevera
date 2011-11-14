@@ -2,7 +2,7 @@
 <resources>
     <string name="hello">Quick claim</string>
     <string name="app_name">SevedroidProject</string>
-    <string name="apikey_desc">API_KEY is required for you to authenticate yourself with the Severa server. You can get your API_KEY by logging into severa (using a web browser) and Going to Tools -&gt; Personal -&gt; Severa API (Tick the box and click the button to generate the key)</string>
+    <string name="apikey_desc">API_KEY is required for you to authenticate yourself with the Severa server. You can get your API_KEY by logging into severa (in https://secure.severa.com ) and Going to Tools -&gt; Personal -&gt; Severa API (Tick the box and click the button to generate the key)</string>
     <string name="apikey_input_title">Enter API KEY below</string>
     <string name="apikey_input_submit">Save your key</string>
     <string name="apikey_test_submit">Finish Configuration</string>

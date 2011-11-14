@@ -128,6 +128,16 @@ public class SevedroidProjectActivity extends Activity implements OnItemSelected
         Log.d(TAG,"OnCreate for main activity done.");
     }
 
+    
+    
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		// TODO Auto-generated method stub
+		super.onActivityResult(requestCode, resultCode, data);
+	}
+
+
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// TODO Auto-generated method stub

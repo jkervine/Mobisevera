@@ -12,7 +12,7 @@
     </EditText>
     <CheckBox android:text="@string/apikey_show_password_checkbox" android:id="@+id/apikey_show_password" android:layout_width="wrap_content" android:layout_height="wrap_content"></CheckBox>
     <!-- <Button android:layout_height="wrap_content" android:id="@+id/apikey_submit_button" android:text="@string/apikey_input_submit" android:layout_width="wrap_content"></Button> -->
-    <TextView android:layout_height="wrap_content" android:text="@string/apikey_desc" android:layout_width="wrap_content"></TextView>
+    <TextView android:layout_height="wrap_content" android:autoLink = "web" android:text="@string/apikey_desc" android:layout_width="wrap_content"></TextView>
     <TextView android:id="@+id/text_first_name" android:layout_width="wrap_content" android:textAppearance="?android:attr/textAppearanceSmall" android:layout_height="wrap_content" android:text="@string/apikey_firstname_text"></TextView>
     <EditText android:layout_width="match_parent" android:id="@+id/fname_edittext" android:layout_height="wrap_content" android:inputType="textPersonName"></EditText>
     <TextView android:id="@+id/text_last_name" android:layout_width="wrap_content" android:textAppearance="?android:attr/textAppearanceSmall" android:layout_height="wrap_content" android:text="@string/apikey_lastname_text"></TextView>
