@@ -35,6 +35,7 @@ public class SevedroidProjectActivity extends Activity implements OnItemSelected
 	private static final String TAG = "Sevedroid";
 	private static final int optionsMenuId = 1;
 	private SeveraCommsUtils mScu = null;
+	private static final int requestCode = 1;
 	
 	private Calendar claimDate = null;
 	// this is the date format S3 api accepts
@@ -71,10 +72,15 @@ public class SevedroidProjectActivity extends Activity implements OnItemSelected
         	Toast.makeText(this,"Please input your API key to use this app!",Toast.LENGTH_LONG).show();
 			Intent intent = new Intent();
 			intent.setClass(this, SevedroidConfig.class);
-			this.startActivity(intent);
+			this.startActivityForResult(intent, requestCode);
 			return;
+        } else {
+        	runOnCreate();
         }
-        // make progress indicators global, hide before use
+    }
+    
+    private void runOnCreate() {
+    	// make progress indicators global, hide before use
         projectsProgress = (ProgressBar)findViewById(R.id.projectsProgressBar);
         phasesProgress = (ProgressBar)findViewById(R.id.phasesProgressBar);
         workTypeProgress = (ProgressBar)findViewById(R.id.workTypeProgressBar);
@@ -126,6 +132,7 @@ public class SevedroidProjectActivity extends Activity implements OnItemSelected
         claimDate = Calendar.getInstance();
         
         Log.d(TAG,"OnCreate for main activity done.");
+
     }
 
     
@@ -133,7 +140,14 @@ public class SevedroidProjectActivity extends Activity implements OnItemSelected
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		// TODO Auto-generated method stub
-		super.onActivityResult(requestCode, resultCode, data);
+		if(requestCode == SevedroidProjectActivity.requestCode && resultCode == Activity.RESULT_OK) {
+			Log.d(TAG,"API KEY input finished with ok result... re-create!");
+			//TODO: Some happy day, change this to Activity.reCreate(), api level 11
+			runOnCreate();
+		} else {
+			Log.d(TAG,"Received activity result:"+resultCode+
+					" with owner requestCode of "+requestCode+", but don't know what to do with it");
+		}
 	}
 
 

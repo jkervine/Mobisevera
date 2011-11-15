@@ -83,6 +83,7 @@ public class SevedroidConfig extends Activity implements OnCheckedChangeListener
 		    scs.insertUserGUID(userItem.getUserGUID());
 		    scs.insertUserIsActive(userItem.getIsActive());
 			Toast.makeText(this,"Configuration works, saving! Welcome, "+userItem.getFirstName()+"!",Toast.LENGTH_LONG).show();
+			this.setResult(Activity.RESULT_OK);
 			this.finish();
 		} else {
 			Toast.makeText(this,"Failed to connect. Please check API Key and name you entered...",Toast.LENGTH_LONG).show();

@@ -104,9 +104,6 @@ public class SeveraCommsUtils {
 			Log.d(TAG,"API key is null... thus returning null");
 			return null;
 		} else {
-			if(httpClient == null) {
-				httpClient = AndroidHttpClient.newInstance(SevedroidConstants.HTTPCLIENT_USERAGENT);
-			}
 			URL url = null;
 			HttpURLConnection urlConnection = null;
 			try {
