@@ -13,6 +13,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.util.Log;
 
 public class S3PhaseContainer {
@@ -55,7 +57,7 @@ public class S3PhaseContainer {
 		xpath = XPathFactory.newInstance().newXPath();
 	}
 
-	public List<S3PhaseItem> getPhases() {
+	public ArrayList<S3PhaseItem> getPhases() {
 		NodeList isLockedNodes = null;
 		NodeList nameNodes = null;
 		NodeList guidNodes = null;
@@ -112,10 +114,22 @@ public class S3PhaseContainer {
 	 *
 	 */
 
-	protected class S3PhaseItem {
+	protected class S3PhaseItem implements Parcelable {
 		private String phaseName;
 		private String phaseLocked;
 		private String phaseGUID;
+		
+		public S3PhaseItem() {
+			phaseName = null;
+			phaseLocked = null;
+			phaseGUID = null;
+		}
+		
+		public S3PhaseItem(Parcel parcel) {
+			phaseGUID = parcel.readString();
+ 			phaseLocked = parcel.readString();
+			phaseName = parcel.readString();
+		}
 		public String getPhaseName() {
 			return phaseName;
 		}
@@ -142,6 +156,32 @@ public class S3PhaseContainer {
 				return this.phaseName;
 			}
 		}
+		@Override
+		public int describeContents() {
+			return this.hashCode();
+		}
+		@Override
+		public void writeToParcel(Parcel dest, int flags) {
+			dest.writeString(this.phaseGUID);
+			dest.writeString(this.phaseLocked);
+			dest.writeString(this.phaseName);
+		}
 	}	
+	
+	public class  S3PhaseItemCreator implements Parcelable.Creator<S3PhaseItem> {
+
+		@Override
+		public S3PhaseItem createFromParcel(Parcel parcel) {
+			// TODO Auto-generated method stub
+			return new S3PhaseItem(parcel);
+		}
+
+		@Override
+		public S3PhaseItem[] newArray(int count) {
+			// TODO Auto-generated method stub
+			return new S3PhaseItem[count];
+		}
+		
+	}
 }
 

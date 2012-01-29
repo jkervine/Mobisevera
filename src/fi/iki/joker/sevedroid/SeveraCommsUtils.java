@@ -105,6 +105,7 @@ public class SeveraCommsUtils {
 			return null;
 		} else {
 			URL url = null;
+			//TODO: We need some kind of check here whether the device is connected to the internet or not...
 			HttpURLConnection urlConnection = null;
 			try {
 				url = new URL(SevedroidConstants.S3_API_URL);
@@ -268,7 +269,7 @@ public class SeveraCommsUtils {
 	public boolean publishHourEntry(Activity parent, String description,
 			String eventDate, String phaseGuid, String quantity,
 			String userGuid, String workTypeGuid) {
-		// TODO Auto-generated method stub
+		// 	
 		S3Response res = null;
 		String soapBody = SevedroidConstants.SOAP_AUTHN_ENVELOPE.replace(
 				SevedroidConstants.SOAP_BODY_SUBSTR, SevedroidConstants.HOUR_ENTRY_BODY);

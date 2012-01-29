@@ -8,6 +8,7 @@ public class SevedroidConstants {
 	protected static final String API_KEY_SUBSTR = "%API_KEY_HERE%";
 	protected static final String SOAP_BODY_SUBSTR = "%BODY_CONTENT_HERE%";
 	
+	//TODO:Check the WSDL and service URLS... IOException thrown 28th January 2012 while testing..
 	protected static final String S3_WSDL_URL = "https://sync.severa.com/webservice/S3/API.svc/WSDL";
 	protected static final String S3_API_URL = "https://sync.severa.com/webservice/S3/API.svc";
 	//protected static final String S3_API_URL = "http://192.168.0.2:7000";

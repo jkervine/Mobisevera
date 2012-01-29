@@ -2,4 +2,5 @@
 <menu
   xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:title="Manage API key" android:visible="true" android:id="@+id/input_api_key_option" android:titleCondensed="Manage API key"></item> 
+	<item android:title="Query claimed hours" android:visible="true" android:id="@+id/query_claimed_hours" android:titleCondensed="Query claimed hours"></item>
 </menu>

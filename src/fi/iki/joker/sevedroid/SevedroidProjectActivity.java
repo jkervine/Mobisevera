@@ -6,6 +6,8 @@ import java.util.Calendar;
 import java.util.List;
 
 import android.app.Activity;
+import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -18,6 +20,7 @@ import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
@@ -36,18 +39,34 @@ public class SevedroidProjectActivity extends Activity implements OnItemSelected
 	private static final int optionsMenuId = 1;
 	private SeveraCommsUtils mScu = null;
 	private static final int requestCode = 1;
+	private static final int DATE_PICKER_DIALOG_ID = 0;
+	private boolean stateRestored = false;
 	
 	private Calendar claimDate = null;
 	// this is the date format S3 api accepts
 	SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 	/**
-	 * The list containing the Cases this user id has access to
+	 * The list containing the Cases this user id has access to and the parcel identifier
 	 */
-	protected List<S3CaseContainer.S3CaseItem> projectList = null;
-	protected List<S3PhaseContainer.S3PhaseItem> phaseList = null;
-	protected String currentPhaseGUID = null;
-	protected List<S3WorkTypeContainer.S3WorkTypeItem> workTypeList = null;
+	protected ArrayList<S3CaseContainer.S3CaseItem> projectList = null;
+	protected static final String CASEITEMLIST_PARCEL_ID = "caseItemParcelID";
+	
+	/**
+	 * The list containing the phases under some particular case this user has access to and the parcel identifier
+	 */
+	
+	protected ArrayList<S3PhaseContainer.S3PhaseItem> phaseList = null;
+	protected static final String PHASEITEMLIST_PARCEL_ID = "phaseItemParcelID";
+	
+	/**
+	 * The list containing the work type items under some particular phase and the parcel identifier
+	 */
+	
+	protected ArrayList<S3WorkTypeContainer.S3WorkTypeItem> workTypeList = null;
+	protected static final String WORKTYPEITEMLIST_PARCEL_ID = "workTypeParcelID";
+	
 	protected String currentWorkTypeGUID = null;
+	protected String currentPhaseGUID = null;
 	
 	ProgressBar projectsProgress = null;
 	ProgressBar phasesProgress = null;
@@ -60,10 +79,33 @@ public class SevedroidProjectActivity extends Activity implements OnItemSelected
 	Spinner workTypeSpinner = null;
 	boolean hourEntryStatus = false;
 	
+	/**
+	 * This callback is called when user has selected a date from the change_data_button
+	 */
+	
+	private DatePickerDialog.OnDateSetListener mDateSetListener =
+            new DatePickerDialog.OnDateSetListener() {
+
+                public void onDateSet(DatePicker view, int year, 
+                                      int monthOfYear, int dayOfMonth) {
+                    claimDate.set(year, monthOfYear, dayOfMonth);
+                }
+            };
+	
+	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d(TAG,"OnCreate called!");
+        if(savedInstanceState == null) {
+        	Log.d(TAG, "Saved instance state is null, recreating Activity state.");
+        } else {
+        	Log.d(TAG, "Saved instance state is not null, restoring Activity state...");
+        	projectList = savedInstanceState.getParcelableArrayList(CASEITEMLIST_PARCEL_ID);
+        	phaseList = savedInstanceState.getParcelableArrayList(PHASEITEMLIST_PARCEL_ID);
+        	workTypeList = savedInstanceState.getParcelableArrayList(WORKTYPEITEMLIST_PARCEL_ID);
+        	stateRestored = true;
+        }
         setContentView(R.layout.main);
         // test if the user has set the api key, if yes, then follow on to load up the projects
         // if not, then auto start the config activity
@@ -79,7 +121,21 @@ public class SevedroidProjectActivity extends Activity implements OnItemSelected
         }
     }
     
-    private void runOnCreate() {
+    
+    
+    @Override
+	protected void onSaveInstanceState(Bundle outState) {
+		// TODO Save List instances here
+		Log.d(TAG,"onSaveInstanceState called!");
+		outState.putParcelableArrayList(CASEITEMLIST_PARCEL_ID, projectList);
+		outState.putParcelableArrayList(PHASEITEMLIST_PARCEL_ID, phaseList);
+		outState.putParcelableArrayList(WORKTYPEITEMLIST_PARCEL_ID, workTypeList);
+    	super.onSaveInstanceState(outState);
+	}
+
+
+
+	private void runOnCreate() {
     	// make progress indicators global, hide before use
         projectsProgress = (ProgressBar)findViewById(R.id.projectsProgressBar);
         phasesProgress = (ProgressBar)findViewById(R.id.phasesProgressBar);
@@ -101,29 +157,37 @@ public class SevedroidProjectActivity extends Activity implements OnItemSelected
         (findViewById(R.id.buttonplus30min)).setOnClickListener(this);
         (findViewById(R.id.button_claim)).setOnClickListener(this);
         (findViewById(R.id.button_claim_overtime)).setOnClickListener(this);
-        
-        projectList = new ArrayList<S3CaseContainer.S3CaseItem>();
-        phaseList = new ArrayList<S3PhaseContainer.S3PhaseItem>();
-        workTypeList = new ArrayList<S3WorkTypeContainer.S3WorkTypeItem>();
-
+        (findViewById(R.id.change_date_button)).setOnClickListener(this);
         projectNameSpinner = (Spinner)findViewById(R.id.projectnamespinner);
+        projectPhaseSpinner = (Spinner)findViewById(R.id.phasenamespinner);
+        workTypeSpinner = (Spinner)findViewById(R.id.worktypespinner);
+        
+        if(projectList == null) {
+        	projectList = new ArrayList<S3CaseContainer.S3CaseItem>();
+        	projectsProgress.setVisibility(View.VISIBLE);
+        	new LoadCasesXMLTask(this).execute();
+        	Toast.makeText(this, "Started to load projects... they will be available once loaded...", Toast.LENGTH_SHORT).show();
+        }
+        if(phaseList == null) {
+        	phaseList = new ArrayList<S3PhaseContainer.S3PhaseItem>();
+        }
+        if(workTypeList == null) {
+        	workTypeList = new ArrayList<S3WorkTypeContainer.S3WorkTypeItem>();
+        }
+
+        
         //as the spinner gets enabled and disabled from the asynctask, make sure it's not null
-        new LoadCasesXMLTask(this).execute();
-        projectsProgress.setVisibility(View.VISIBLE);
-        Toast.makeText(this, "Started to load projects... they will be available once loaded...", Toast.LENGTH_SHORT).show();
-        projectAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item,
-        projectList);
+      
+        projectAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, projectList);
         projectAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         projectNameSpinner.setAdapter(projectAdapter);
         projectNameSpinner.setOnItemSelectedListener(this);
         
-        projectPhaseSpinner = (Spinner)findViewById(R.id.phasenamespinner);
         phaseAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item,phaseList);
         phaseAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         projectPhaseSpinner.setOnItemSelectedListener(this);
         projectPhaseSpinner.setAdapter(phaseAdapter);
         
-        workTypeSpinner = (Spinner)findViewById(R.id.worktypespinner);
         workTypeAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item,workTypeList);
         workTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         workTypeSpinner.setOnItemSelectedListener(this);
@@ -176,7 +240,11 @@ public class SevedroidProjectActivity extends Activity implements OnItemSelected
 			Log.d(TAG,"SevedroidConfig Activity starting...");
 			this.startActivity(intent);
 			break;
+		case R.id.query_claimed_hours:
+			//TODO: create a link to query logic here...
+			break;
 		}
+		
 		return super.onOptionsItemSelected(item);
 	}
 	/**
@@ -219,24 +287,40 @@ public class SevedroidProjectActivity extends Activity implements OnItemSelected
 			long id) {
 		Log.d(TAG,"OnItemSelected called: adapterViewID:"+adapterView.getId()+"view ID:"+view.getId()+", pos:"+position+" id:"+id);
 		if(adapterView.getId() == R.id.projectnamespinner) {
-			phasesProgress.setVisibility(View.VISIBLE);
 			/* user selected new case, look up case phases */
-			String caseGuid = projectList.get(position).getCaseGuid();
-			Log.d(TAG,"User selected case pos: "+position+" with GUID: "+caseGuid);
-			new LoadPhasesXMLTask(this).execute(caseGuid);
+			if(stateRestored) {
+				Log.d(TAG,"Because state is just restored, ignoring this onItemSelected event as a side effect of that...");
+				return;
+			} else {
+				String caseGuid = projectList.get(position).getCaseGuid();
+				Log.d(TAG,"User selected case pos: "+position+" with GUID: "+caseGuid);
+				phasesProgress.setVisibility(View.VISIBLE);
+				new LoadPhasesXMLTask(this).execute(caseGuid);
+			}
 		} else if(adapterView.getId() == R.id.phasenamespinner) {
-			Log.d(TAG,"User selected phase pos: "+position);
-			Log.d(TAG,"Phase GUID for claiming:"+phaseList.get(position).getPhaseGUID());
-			Log.d(TAG,"Phase Name for claiming:"+phaseList.get(position).getPhaseName());
-			String phaseGuid = phaseList.get(position).getPhaseGUID();
-			this.currentPhaseGUID = phaseGuid;
-			new LoadWorkTypesXMLTask(this).execute(phaseGuid);
+			if(stateRestored) {
+				Log.d(TAG,"Because state is just restored, ignoring this onItemSelected event as a side effect of that...");
+				return;
+			} else {
+				Log.d(TAG,"User selected phase pos: "+position);
+				Log.d(TAG,"Phase GUID for claiming:"+phaseList.get(position).getPhaseGUID());
+				Log.d(TAG,"Phase Name for claiming:"+phaseList.get(position).getPhaseName());
+				String phaseGuid = phaseList.get(position).getPhaseGUID();
+				this.currentPhaseGUID = phaseGuid;
+				new LoadWorkTypesXMLTask(this).execute(phaseGuid);
+			}
 		} else if(adapterView.getId() == R.id.worktypespinner) {
-			String workTypeGuid = workTypeList.get(position).getWorkTypeGUID();
-			Log.d(TAG,"User selected work type pos: "+position);
-			Log.d(TAG,"WorkType Guid for claiming:"+workTypeList.get(position).getWorkTypeGUID());
-			Log.d(TAG,"WorkType Name for claiming:"+workTypeList.get(position).getWorkTypeName());
-			this.currentWorkTypeGUID = workTypeGuid;
+			if(stateRestored) {
+				Log.d(TAG,"Because state is just restored, ignoring this onItemSelected event as a side effect of that...");
+				stateRestored = false;
+				return;
+			} else {
+				String workTypeGuid = workTypeList.get(position).getWorkTypeGUID();
+				Log.d(TAG,"User selected work type pos: "+position);
+				Log.d(TAG,"WorkType Guid for claiming:"+workTypeList.get(position).getWorkTypeGUID());
+				Log.d(TAG,"WorkType Name for claiming:"+workTypeList.get(position).getWorkTypeName());
+				this.currentWorkTypeGUID = workTypeGuid;
+			}
 		}
 	}
 
@@ -332,7 +416,9 @@ public class SevedroidProjectActivity extends Activity implements OnItemSelected
 			case R.id.button_claim:
 				Log.d(TAG,"Started to claim...");
 				String description = ((EditText)findViewById(R.id.explanation_text)).getText().toString();
-				claimDate = Calendar.getInstance();
+				if(claimDate == null) {
+						claimDate = Calendar.getInstance();
+				}
 				String eventDate = formatter.format(claimDate.getTime());
 				String phaseGuid = this.currentPhaseGUID;
 				String hours = ((EditText)findViewById(R.id.hours_amount)).getText().toString();
@@ -343,6 +429,10 @@ public class SevedroidProjectActivity extends Activity implements OnItemSelected
 				String workTypeGuid = this.currentWorkTypeGUID;
 				String [] params = {description, eventDate, phaseGuid, quantity, userGuid, workTypeGuid};
 				new PublishHourEntryTask(this).execute(params);
+				break;
+			case R.id.change_date_button:
+				Log.d(TAG, "Change claim date...");
+				showDialog(DATE_PICKER_DIALOG_ID);
 				break;
 			default:
 				Log.d(TAG, "Click event detected but no action taken...");
@@ -385,6 +475,23 @@ public class SevedroidProjectActivity extends Activity implements OnItemSelected
 		}
 		
 	}
+	
+	
+	
+	@Override
+	protected Dialog onCreateDialog(int id) {
+		// TODO Auto-generated method stub
+		if(id == DATE_PICKER_DIALOG_ID) {
+			return new DatePickerDialog(this, mDateSetListener, 
+					claimDate.get(Calendar.YEAR),
+					claimDate.get(Calendar.MONTH),
+					claimDate.get(Calendar.DAY_OF_MONTH));
+		}
+		return null;
+	}
+
+
+
 	/**
 	 * AsyncTask for loading the cases XML from S3 SOAP service 
 	 */

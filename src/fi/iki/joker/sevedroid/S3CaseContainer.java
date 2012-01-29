@@ -15,6 +15,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.util.Log;
 
 /**
@@ -67,7 +69,7 @@ public class S3CaseContainer {
 		xpath = XPathFactory.newInstance().newXPath();
 	}
 	
-	public List<S3CaseItem> getCases() {
+	public ArrayList<S3CaseItem> getCases() {
 		NodeList accountNodes = null;
 		NodeList internalNameNodes = null;
 		NodeList guidNodes = null;
@@ -124,10 +126,24 @@ public class S3CaseContainer {
 	 *
 	 */
 	
-	protected class S3CaseItem {
+	protected class S3CaseItem implements Parcelable {
 		private String caseGuid;
 		private String caseAccountName;
 		private String caseInternalName;
+		
+		public S3CaseItem() {
+			this.caseGuid = null;
+			this.caseAccountName = null;
+			this.caseInternalName = null;
+		}
+		
+		public S3CaseItem(Parcel source) {
+			Log.d(TAG, "Recostructing from Parcel...");
+			this.caseGuid = source.readString();
+			this.caseAccountName = source.readString();
+			this.caseInternalName = source.readString();
+		}
+		
 		public String getCaseGuid() {
 			return caseGuid;
 		}
@@ -149,6 +165,33 @@ public class S3CaseContainer {
 		public String toString() {
 			return this.caseInternalName;
 		}
-	}	
+		@Override
+		public int describeContents() {
+			return this.hashCode();
+		}
+		@Override
+		public void writeToParcel(Parcel parcel, int flags) {
+			Log.d(TAG, "Writing to parcel :"+this.hashCode()+" with flags: "+flags);
+			parcel.writeString(caseGuid);
+			parcel.writeString(caseAccountName);
+			parcel.writeString(caseInternalName);
+		}
+		
+		
+	}
+	
+	public class S3CaseItemCreator implements Parcelable.Creator<S3CaseItem> {
+
+		@Override
+		public S3CaseItem createFromParcel(Parcel source) {
+			return new S3CaseItem(source);
+		}
+
+		@Override
+		public S3CaseItem[] newArray(int size) {
+			return new S3CaseItem[size];
+		}
+		
+	}
 	
 }

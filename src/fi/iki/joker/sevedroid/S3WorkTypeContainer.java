@@ -13,6 +13,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.util.Log;
 
 public class S3WorkTypeContainer {
@@ -56,7 +58,7 @@ public class S3WorkTypeContainer {
 		xpath = XPathFactory.newInstance().newXPath();
 	}
 
-	public List<S3WorkTypeItem> getWorkTypes() {
+	public ArrayList<S3WorkTypeItem> getWorkTypes() {
 		NodeList isActiveNodes = null;
 		NodeList nameNodes = null;
 		NodeList guidNodes = null;
@@ -112,10 +114,22 @@ public class S3WorkTypeContainer {
 	 *
 	 */
 
-	protected class S3WorkTypeItem {
+	protected class S3WorkTypeItem implements Parcelable {
 		private String workTypeName;
 		private String isActive;
 		private String workTypeGUID;
+		
+		public S3WorkTypeItem() {
+			workTypeName = null;
+			isActive = null;
+			workTypeGUID = null;
+		}
+		
+		public S3WorkTypeItem(Parcel source) {
+			isActive = source.readString();
+			workTypeGUID = source.readString();
+			workTypeName =  source.readString();
+		}
 		public String getWorkTypeName() {
 			return workTypeName;
 		}
@@ -143,7 +157,29 @@ public class S3WorkTypeContainer {
 			}
 			return str;
 		}
-		
-		
+		@Override
+		public int describeContents() {
+			return this.hashCode();
+		}
+		@Override
+		public void writeToParcel(Parcel dest, int flags) {
+			dest.writeString(this.isActive);
+			dest.writeString(this.workTypeGUID);
+			dest.writeString(this.workTypeName);
+		}
 	}	
+	
+	public class S3WorkTypeItemCreator implements Parcelable.Creator<S3WorkTypeItem> {
+
+		@Override
+		public S3WorkTypeItem createFromParcel(Parcel source) {
+			return new S3WorkTypeItem(source);
+		}
+
+		@Override
+		public S3WorkTypeItem[] newArray(int size) {
+			return new S3WorkTypeItem[size];
+		}
+		
+	}
 }
