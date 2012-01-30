@@ -6,8 +6,10 @@ import java.util.Calendar;
 import java.util.List;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -22,24 +24,29 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 /**
- * The main activity
+ * The main activity for the application
+ * TODO: Split this into multiple source files, too long now
  * Logcat: logcat Sevedroid:V *:S
  * @author juha
  *
  */
 
-public class SevedroidProjectActivity extends Activity implements OnItemSelectedListener, OnClickListener {
+public class SevedroidProjectActivity extends Activity implements OnItemSelectedListener, 
+																	OnClickListener {
     
 	private static final String TAG = "Sevedroid";
 	private static final int optionsMenuId = 1;
 	private SeveraCommsUtils mScu = null;
 	private static final int requestCode = 1;
 	private static final int DATE_PICKER_DIALOG_ID = 0;
+	private static final int NOT_CONNECTED_DIALOG_ID = 1;
 	private boolean stateRestored = false;
 	
 	private Calendar claimDate = null;
@@ -106,6 +113,10 @@ public class SevedroidProjectActivity extends Activity implements OnItemSelected
         	workTypeList = savedInstanceState.getParcelableArrayList(WORKTYPEITEMLIST_PARCEL_ID);
         	stateRestored = true;
         }
+        if(SeveraCommsUtils.checkIfConnected(this) == false) {
+			showDialog(NOT_CONNECTED_DIALOG_ID);
+			return;
+		}
         setContentView(R.layout.main);
         // test if the user has set the api key, if yes, then follow on to load up the projects
         // if not, then auto start the config activity
@@ -121,9 +132,7 @@ public class SevedroidProjectActivity extends Activity implements OnItemSelected
         }
     }
     
-    
-    
-    @Override
+	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		// TODO Save List instances here
 		Log.d(TAG,"onSaveInstanceState called!");
@@ -132,8 +141,6 @@ public class SevedroidProjectActivity extends Activity implements OnItemSelected
 		outState.putParcelableArrayList(WORKTYPEITEMLIST_PARCEL_ID, workTypeList);
     	super.onSaveInstanceState(outState);
 	}
-
-
 
 	private void runOnCreate() {
     	// make progress indicators global, hide before use
@@ -486,6 +493,18 @@ public class SevedroidProjectActivity extends Activity implements OnItemSelected
 					claimDate.get(Calendar.YEAR),
 					claimDate.get(Calendar.MONTH),
 					claimDate.get(Calendar.DAY_OF_MONTH));
+		}
+		if(id == NOT_CONNECTED_DIALOG_ID) {
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setMessage("This application requires a network connection.")
+			       .setCancelable(false)
+			       .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+			           public void onClick(DialogInterface dialog, int id) {
+			                SevedroidProjectActivity.this.finish();
+			           }
+			       });
+			AlertDialog alert = builder.create();
+			return alert;	
 		}
 		return null;
 	}

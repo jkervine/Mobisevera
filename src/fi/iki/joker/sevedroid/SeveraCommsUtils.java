@@ -27,6 +27,8 @@ import java.net.URL;
 import javax.net.ssl.HttpsURLConnection;
 
 import android.app.Activity;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.http.AndroidHttpClient;
 import android.util.Log;
 
@@ -37,6 +39,8 @@ public class SeveraCommsUtils {
 	private AndroidHttpClient httpClient = null;
 	
 	private class S3Response {
+		// magic number to denote device is not connected - could be anything, just not a valid HTTP status code.
+		private static final int RESPONSE_DEVICE_NOT_CONNECTED = 219913; 
 		private int responseCode = 0;
 		private String responseXML = "";
 		public int getResponseCode() {
@@ -85,6 +89,20 @@ public class SeveraCommsUtils {
 	  }
 	
 	/**
+	 * Utility method to check if device is connected or not
+	 */
+	
+	public static boolean checkIfConnected(Activity context) {
+		ConnectivityManager connMgr = (ConnectivityManager)context.getSystemService(context.CONNECTIVITY_SERVICE);
+		NetworkInfo ni = connMgr.getActiveNetworkInfo();
+		if(ni != null && ni.isConnected()) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	/**
 	 * Utility method to make the actual soap call
 	 * @param parent The activity that invoked this call in the first palce
 	 * @param soapMessage the body part of the soap message. This method will append the header part where there's the required API key, but
@@ -94,6 +112,7 @@ public class SeveraCommsUtils {
 	 */
 	
 	private S3Response requestWithMessage(Activity parent,String soapEnvelope, String soapAction) {
+		
 		SevedroidContentStore scs = new SevedroidContentStore(parent);
 		String soapMessage = null;
 		S3Response res = new S3Response();
