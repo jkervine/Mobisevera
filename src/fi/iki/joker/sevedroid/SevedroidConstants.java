@@ -20,6 +20,7 @@ public class SevedroidConstants {
 	protected static final String SOAP_ACTION_GET_PHASES_BY_CASE_GUID = "http://soap.severa.com/IPhase/GetPhasesByCaseGUID";
 	protected static final String SOAP_ACTION_GET_WORKTYPES_BY_PHASE_GUID = "http://soap.severa.com/IWorkType/GetWorkTypesByPhaseGUID";
 	protected static final String SOAP_ACTION_PUBLISH_HOURENTRY = "http://soap.severa.com/IHourEntry/AddNewHourEntry";
+	protected static final String SOAP_ACTION_GET_HOURENTRIES_BY_DATE_AND_USER_GUID = "http://soap.severa.com/GetHourEntriesByDateAndUserGUID";
 	
 	protected static final String SOAP_AUTHN_ENVELOPE = 
 			"<SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:sev=\"http://schemas.datacontract.org/2004/07/Severa.Entities.API\" xmlns:ns1 = \"http://soap.severa.com/\">"+
@@ -112,5 +113,18 @@ public class SevedroidConstants {
 	protected static final String GET_USER_BY_NAME_BODY = "<ns1:GetUserByName>"+
          "<ns1:firstName>"+USER_FIRST_NAME_HERE+"</ns1:firstName>"+
          "<ns1:lastName>"+USER_LAST_NAME_HERE+"</ns1:lastName>"+
-         "</ns1:GetUserByName>";	
+         "</ns1:GetUserByName>";
+	/**
+	 * Constants for querying user's claimed hours
+	 */
+	
+	protected static final String FIRST_HOUR_ENTRY_DATE_HERE = "%FIRST_HOUR_ENTRY_DATE_HERE%";
+	protected static final String LAST_HOUR_ENTRY_DATE_HERE = "%LAST_HOUR_ENTRY_DATE_HERE%";
+	protected static final String USER_GUID_HERE = "%USER_GUID_HERE%";
+	
+	protected static final String GET_HOUR_ENTRIES_BY_DATE_AND_USER_GUID_BODY = "<soap:GetHourEntriesByDateAndUserGUID>"+
+         "<soap:startdate>"+FIRST_HOUR_ENTRY_DATE_HERE+"</soap:startdate>"+
+         "<soap:enddate>"+LAST_HOUR_ENTRY_DATE_HERE+"</soap:enddate>"+
+         "<soap:userGUID>"+USER_GUID_HERE+"</soap:userGUID>"+
+         "</soap:GetHourEntriesByDateAndUserGUID>";
 }
