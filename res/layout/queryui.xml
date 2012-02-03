@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" 
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/queryfromlabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/query_from_date_text" />
+
+        <DatePicker
+            android:id="@+id/datePickerFromDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/querytolabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/query_to_date_text" />
+
+        <DatePicker
+            android:id="@+id/datePickerToDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/projectselectionlabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/query_by_project_label" />
+        <!-- Spinner for projects and a progress meter -->
+    	<LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content">
+   	    <Spinner android:id="@+id/queryui_projectnamespinner" 
+            android:layout_width="match_parent" android:layout_height="wrap_content"/>
+        <ProgressBar style="?android:attr/progressBarStyleSmall" 
+            android:id="@+id/projectsProgressBar" 
+            android:layout_width="wrap_content" 
+        	android:layout_height="wrap_content"/>
+    	</LinearLayout>
+        <!--  Spinner for project phases and a progress meter -->
+    	<!--  The phase spinner, do we need this or is it enough to just create the project spinner? 
+    	<LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content">
+		<Spinner android:id="@+id/phasenamespinner" 
+		    	android:layout_width="match_parent" 
+		    	android:layout_height="wrap_content"/>
+		<ProgressBar style="?android:attr/progressBarStyleSmall" 
+		    android:id="@+id/phasesProgressBar" 
+		    android:layout_width="wrap_content" 
+		    android:layout_height="wrap_content"/>
+		</LinearLayout>
+		-->
+    	<Button android:text="@string/query_button_label"
+    	    android:id="@+id/query_button_id"
+    	    android:layout_width="wrap_content"
+    	    android:layout_height="wrap_content"/>
+    </LinearLayout>
+</ScrollView>

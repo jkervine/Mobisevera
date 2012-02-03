@@ -16,5 +16,6 @@
             </intent-filter>
         </activity>
         <activity android:name=".SevedroidConfig"></activity>
+        <activity android:name=".QueryHourEntries"></activity>
     </application>
 </manifest>

@@ -20,4 +20,9 @@
     <string name="menuitem_options">Options</string>
     <string name="amount_minutes_text">Minutes</string>
     <string name="amount_hours_text">Hours</string>
+    <string name="query_from_date_text">From date</string>
+    <string name="query_to_date_text">Until date</string>
+    <string name="query_by_project_label">Select project</string>
+    <string name="query_by_task_label">Select task</string>
+    <string name="query_button_label">Fetch claims</string>
 </resources>
