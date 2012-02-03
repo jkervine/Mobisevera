@@ -17,6 +17,7 @@ public class SevedroidConstants {
 	
 	protected static final String SOAP_ACTION_GET_USER_BY_NAME = "http://soap.severa.com/IUser/GetUserByName";
 	protected static final String SOAP_ACTION_GET_ALL_CASES = "http://soap.severa.com/ICase/GetAllCases";
+	protected static final String SOAP_ACTION_GET_CASE_BY_GUID = "http://soap.severa.com/ICase/GetCaseByGUID";
 	protected static final String SOAP_ACTION_GET_PHASES_BY_CASE_GUID = "http://soap.severa.com/IPhase/GetPhasesByCaseGUID";
 	protected static final String SOAP_ACTION_GET_WORKTYPES_BY_PHASE_GUID = "http://soap.severa.com/IWorkType/GetWorkTypesByPhaseGUID";
 	protected static final String SOAP_ACTION_PUBLISH_HOURENTRY = "http://soap.severa.com/IHourEntry/AddNewHourEntry";
@@ -64,6 +65,15 @@ public class SevedroidConstants {
 	protected static final String GET_ALL_CASES_BODY = "<ns1:GetAllCases/>";
 	
 	protected static final String CASE_GUID_SUBSTR = "%CASE_GUID_HERE%";
+	
+	/**
+	 * Soap body for query for getting one case for given case GUID
+	 */
+	
+	protected static final String GET_CASE_BY_GUID_BODY = "<ns1:GetCaseByGUID>"+
+         "<ns1:caseGuid>"+CASE_GUID_SUBSTR+"</ns1:caseGuid>"+
+         "</ns1:GetCaseByGUID>";
+	
 	
 	protected static final String GET_PHASES_BY_CASE_GUID_BODY = 
 			"<ns1:GetPhasesByCaseGUID>"+

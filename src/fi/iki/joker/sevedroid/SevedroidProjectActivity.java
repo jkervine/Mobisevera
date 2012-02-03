@@ -41,6 +41,12 @@ import android.widget.Toast;
 public class SevedroidProjectActivity extends Activity implements OnItemSelectedListener, 
 																	OnClickListener {
     
+	/**
+	 * Key under which the project list is saved to spawned Activies extras 
+	 */
+	
+	public static final String PROJECTLIST_BUNDLE_KEY = "pListInMyStack";
+	
 	private static final String TAG = "Sevedroid";
 	private static final int optionsMenuId = 1;
 	private SeveraCommsUtils mScu = null;
@@ -55,21 +61,21 @@ public class SevedroidProjectActivity extends Activity implements OnItemSelected
 	/**
 	 * The list containing the Cases this user id has access to and the parcel identifier
 	 */
-	protected ArrayList<S3CaseContainer.S3CaseItem> projectList = null;
+	protected ArrayList<S3CaseItem> projectList = null;
 	protected static final String CASEITEMLIST_PARCEL_ID = "caseItemParcelID";
 	
 	/**
 	 * The list containing the phases under some particular case this user has access to and the parcel identifier
 	 */
 	
-	protected ArrayList<S3PhaseContainer.S3PhaseItem> phaseList = null;
+	protected ArrayList<S3PhaseItem> phaseList = null;
 	protected static final String PHASEITEMLIST_PARCEL_ID = "phaseItemParcelID";
 	
 	/**
 	 * The list containing the work type items under some particular phase and the parcel identifier
 	 */
 	
-	protected ArrayList<S3WorkTypeContainer.S3WorkTypeItem> workTypeList = null;
+	protected ArrayList<S3WorkTypeItem> workTypeList = null;
 	protected static final String WORKTYPEITEMLIST_PARCEL_ID = "workTypeParcelID";
 	
 	protected String currentWorkTypeGUID = null;
@@ -170,16 +176,16 @@ public class SevedroidProjectActivity extends Activity implements OnItemSelected
         workTypeSpinner = (Spinner)findViewById(R.id.worktypespinner);
         
         if(projectList == null) {
-        	projectList = new ArrayList<S3CaseContainer.S3CaseItem>();
+        	projectList = new ArrayList<S3CaseItem>();
         	projectsProgress.setVisibility(View.VISIBLE);
         	new LoadCasesXMLTask(this).execute();
         	Toast.makeText(this, "Started to load projects... they will be available once loaded...", Toast.LENGTH_SHORT).show();
         }
         if(phaseList == null) {
-        	phaseList = new ArrayList<S3PhaseContainer.S3PhaseItem>();
+        	phaseList = new ArrayList<S3PhaseItem>();
         }
         if(workTypeList == null) {
-        	workTypeList = new ArrayList<S3WorkTypeContainer.S3WorkTypeItem>();
+        	workTypeList = new ArrayList<S3WorkTypeItem>();
         }
 
         
@@ -231,24 +237,29 @@ public class SevedroidProjectActivity extends Activity implements OnItemSelected
 		return true;
 	}
 	
-	public List<S3CaseContainer.S3CaseItem> getProjectList() {
+	public List<S3CaseItem> getProjectList() {
 		return this.projectList;
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// TODO Auto-generated method stub
-		Log.d(TAG,"SevedroidConfig selected...");
+		Log.d(TAG,"OnOptionsItemSelected...");
 		switch (item.getItemId()) {
 		case R.id.input_api_key_option:
-			new Activity();
 			Intent intent = new Intent();
 			intent.setClass(this, SevedroidConfig.class);
 			Log.d(TAG,"SevedroidConfig Activity starting...");
 			this.startActivity(intent);
 			break;
 		case R.id.query_claimed_hours:
-			//TODO: create a link to query logic here...
+			Intent queryIntent = new Intent();
+			queryIntent.setClass(this, QueryHourEntries.class);
+			Bundle projectsListBundle = new Bundle();
+			projectsListBundle.putParcelableArrayList(PROJECTLIST_BUNDLE_KEY, projectList);
+			queryIntent.putExtras(projectsListBundle);
+			Log.d(TAG,"QueryHourEntries Activity starting...");
+			this.startActivity(queryIntent);
 			break;
 		}
 		
@@ -509,6 +520,7 @@ public class SevedroidProjectActivity extends Activity implements OnItemSelected
 		return null;
 	}
 
+	//TODO: Make these asynctasks go away from this already bloated class
 
 
 	/**

@@ -238,6 +238,33 @@ public class SeveraCommsUtils {
 	}
 	
 	/**
+	 * This invokes the "GetCaseByGuid" operation. 
+	 * @param parent
+	 * @param caseGuid
+	 * @return
+	 */
+	
+	protected String getCaseXMLByGUID(Activity parent, String caseGuid) {
+		S3Response res = null;
+		String soapMessage = SevedroidConstants.SOAP_AUTHN_ENVELOPE.replace(
+				SevedroidConstants.SOAP_BODY_SUBSTR, SevedroidConstants.GET_CASE_BY_GUID_BODY);
+		soapMessage = soapMessage.replace(SevedroidConstants.CASE_GUID_SUBSTR, caseGuid);
+		res = requestWithMessage(parent, soapMessage,
+					SevedroidConstants.SOAP_ACTION_GET_CASE_BY_GUID);
+		if (res == null) {
+			Log.d(TAG, "Response was null while getting case by case GUID.");
+			return null;
+		} else {
+			Log.d(TAG, "While getting case by case guid xml, response valueOf was:"+String.valueOf(res.responseXML));
+			if(res.responseCode == SevedroidConstants.CODE_INTERNAL_SERVER_ERROR && (res.responseXML == null)) {
+				return null;
+			} else {
+				return res.responseXML;
+			}
+		}
+	}
+	
+	/**
 	 * This invokes the "GetPhasesByCaseGUID" operation. Returns potentially a ton of xml, so caller
 	 * should prepare for a big String in response.
 	 */
@@ -311,6 +338,27 @@ public class SeveraCommsUtils {
 			}
 		}
 		//return false;
+	}
+	
+	public String getHourEntriesByDateAndUserGUID(Activity parent, String startDate, String endDate, String userGuid) {
+		S3Response res = null;
+		String soapBody = SevedroidConstants.SOAP_AUTHN_ENVELOPE.replace(
+					SevedroidConstants.SOAP_BODY_SUBSTR, SevedroidConstants.GET_HOUR_ENTRIES_BY_DATE_AND_USER_GUID_BODY);
+		String soapMessage = soapBody.replace(SevedroidConstants.USER_GUID_HERE,userGuid);
+		soapMessage = soapBody.replace(SevedroidConstants.FIRST_HOUR_ENTRY_DATE_HERE, startDate);
+		soapMessage = soapBody.replace(SevedroidConstants.LAST_HOUR_ENTRY_DATE_HERE, endDate);
+		res = requestWithMessage(parent, soapMessage, SevedroidConstants.SOAP_ACTION_GET_HOURENTRIES_BY_DATE_AND_USER_GUID);
+		if (res == null) {
+			Log.d(TAG, "Respoanse was null whic getting hour entries by date, userguid.");
+			return null;
+		} else {
+			Log.d(TAG,"While getting hour entries by date, userguid, response was: "+String.valueOf(res.responseXML));
+			if(res.responseCode == SevedroidConstants.CODE_INTERNAL_SERVER_ERROR && (res.responseXML == null)) {
+				return null;
+			} else {
+				return res.responseXML;
+			}
+		}
 	}
 
 }

@@ -2,10 +2,13 @@ package fi.iki.joker.sevedroid;
 
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
 
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -14,7 +17,6 @@ import org.xml.sax.InputSource;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
-import fi.iki.joker.sevedroid.S3HourEntryContainer.S3HourEntry;
 
 /**
  * This class contains the logic for handling hour entries (ie. hour claims made by the user)
@@ -42,11 +44,16 @@ public class S3HourEntryContainer {
 		
 	}
 	
-	private S3HourEntryContainer getInstance() {
+	public static S3HourEntryContainer getInstance() {
 		return instance;
 	}
 	
-	public ArrayList<S3HourEntry> getCases() {
+	public void setHourEntriesXML(final String xmlForHourEntries) {
+		myXml = xmlForHourEntries;
+		xpath = XPathFactory.newInstance().newXPath();
+	}
+	
+	public ArrayList<S3HourEntryItem> getHourEntries() {
 		NodeList descriptionNodes = null;
 		NodeList quantityNodes = null;
 		NodeList guidNodes = null;
@@ -81,9 +88,9 @@ public class S3HourEntryContainer {
 			Log.e(TAG,"Node lists are not of same length! (guid & guantity lists)");
 			return null;
 		}
-		ArrayList<S3HourEntry> res = new ArrayList<S3HourEntry>(totalItems);
+		ArrayList<S3HourEntryItem> res = new ArrayList<S3HourEntryItem>(totalItems);
 		for(int i=0; i< totalItems; i++) {
-			S3HourEntry HourEntry = new S3HourEntry();
+			S3HourEntryItem HourEntry = new S3HourEntryItem();
 			Node descriptionNode = descriptionNodes.item(i);
 			Node quantityNode = quantityNodes.item(i);
 			Node guidNode = guidNodes.item(i);
@@ -97,78 +104,30 @@ public class S3HourEntryContainer {
 	}
 	
 	/**
-	 * Container class for one Severa 3 case. A list of these is returned after parsing the answer
-	 * to getAllCases api call.
-	 * @author juha
-	 *
+	 * Using queried work hours from getHourEntries, find which projects (or in S3 terms, "cases") are the targets of this work
+	 * @return S3CaseContainer.S3CaseItems
 	 */
 	
-	protected class S3HourEntry implements Parcelable {
-		private String caseGuid;
-		private String quantity;
-		private String description;
-		
-		public S3HourEntry() {
-			this.caseGuid = null;
-			this.quantity = null;
-			this.description = null;
+	public String [] getDistinctCaseGUIDsFromHourEntryList(ArrayList<S3HourEntryItem> hoursList) {
+		HashSet<String> distinctKeySet = new HashSet<String>();
+		if(hoursList == null) {
+			Log.d(TAG,"Got null hoursList, returning null...");
+			return null;
 		}
-		
-		public S3HourEntry(Parcel source) {
-			Log.d(TAG, "Recostructing from Parcel...");
-			this.caseGuid = source.readString();
-			this.quantity = source.readString();
-			this.description = source.readString();
+		Log.d(TAG,"Getting distinct projects from hourslist of "+hoursList.size()+" items.");
+		for (S3HourEntryItem hoursItem : hoursList) {
+			if(!distinctKeySet.contains(hoursItem.getCaseGuid())) {
+				distinctKeySet.add(hoursItem.getCaseGuid());
+			}
 		}
-		
-		public String getCaseGuid() {
-			return caseGuid;
+		String[] distinctCaseGuids = new String[distinctKeySet.size()];
+		Iterator<String> it = distinctKeySet.iterator();
+		for (int i = 0; i < distinctKeySet.size(); i++) {
+			distinctCaseGuids[i] = it.next();
 		}
-		public void setCaseGuid(String caseGuid) {
-			this.caseGuid = caseGuid;
-		}
-		public String getQuantity() {
-			return quantity;
-		}
-		public void setQuantity(String quantity) {
-			this.quantity = quantity;
-		}
-		public String getDescription() {
-			return description;
-		}
-		public void setDescription(String description) {
-			this.description = description;
-		}
-		public String toString() {
-			return this.description+" - "+quantity;
-		}
-		@Override
-		public int describeContents() {
-			return this.hashCode();
-		}
-		@Override
-		public void writeToParcel(Parcel parcel, int flags) {
-			Log.d(TAG, "Writing to parcel :"+this.hashCode()+" with flags: "+flags);
-			parcel.writeString(caseGuid);
-			parcel.writeString(quantity);
-			parcel.writeString(description);
-		}
-		
-		
+		Log.d(TAG,"Returning "+distinctCaseGuids.length+" distinct case guids.");
+		return distinctCaseGuids;
 	}
 	
-	public class S3HourEntryCreator implements Parcelable.Creator<S3HourEntry> {
-
-		@Override
-		public S3HourEntry createFromParcel(Parcel source) {
-			return new S3HourEntry(source);
-		}
-
-		@Override
-		public S3HourEntry[] newArray(int size) {
-			return new S3HourEntry[size];
-		}
-		
-	}
 	
 }
