@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -15,6 +16,7 @@ import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Spinner;
 
 public class QueryHourEntries extends Activity implements OnClickListener,
@@ -34,7 +36,13 @@ public class QueryHourEntries extends Activity implements OnClickListener,
 	protected ArrayList<S3CaseItem> projectList = null;
 	protected static final String CASEITEMLIST_PARCEL_ID = "caseItemParcelID";
 	
+	protected Spinner projectSpinner = null;
+	protected boolean queryCancelled = false;
+	protected LoadHourEntriesXMLTask loadHoursTask = null;
+	protected ProgressDialog pd = null;
+	
 	private static final int NO_PROJECTS_DIALOG_ID = 001;
+	private static final int STARTED_HOURS_QUERY_DIALOG_ID = 002;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -56,13 +64,15 @@ public class QueryHourEntries extends Activity implements OnClickListener,
 		if(projectList == null || projectList.isEmpty()) {
 			showDialog(NO_PROJECTS_DIALOG_ID);
 		} else {
-			Spinner projectSpinner = (Spinner)findViewById(R.id.queryui_projectnamespinner);
+			projectSpinner = (Spinner)findViewById(R.id.queryui_projectnamespinner);
 			ArrayAdapter<S3CaseItem> projectAdapter = 
 					new ArrayAdapter<S3CaseItem>(this, android.R.layout.simple_spinner_dropdown_item, projectList);
 	        projectAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 	        projectSpinner.setAdapter(projectAdapter);
 	        projectSpinner.setOnItemSelectedListener(this);
 		}
+		Button submitButton = (Button)findViewById(R.id.query_button_id);
+		submitButton.setOnClickListener(this);
 	}
 
 	@Override
@@ -78,6 +88,21 @@ public class QueryHourEntries extends Activity implements OnClickListener,
 			       });
 			AlertDialog alert = builder.create();
 			return alert;	
+		} if (id == STARTED_HOURS_QUERY_DIALOG_ID) {
+			pd = new ProgressDialog(this);
+			pd.setMessage("Querying hours... ");
+			pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+			pd.show();
+			pd.setCancelable(true);
+			pd.setOnCancelListener(new DialogInterface.OnCancelListener() {
+				@Override
+				public void onCancel(DialogInterface dialog) {
+					if(loadHoursTask != null) {
+						loadHoursTask.cancel(true);
+					}
+					pd.dismiss();
+				}
+			});
 		}
 		return null;
 	}
@@ -96,9 +121,9 @@ public class QueryHourEntries extends Activity implements OnClickListener,
 	}
 
 	@Override
-	public void onClick(View arg0) {
-		// TODO Auto-generated method stub
-
+	public void onClick(View buttonView) {
+		loadHoursTask = new LoadHourEntriesXMLTask(this);
+		loadHoursTask.execute();
 	}
 	
 	/**
@@ -106,22 +131,21 @@ public class QueryHourEntries extends Activity implements OnClickListener,
 	 * params: doinBackground(startDate, endDate, userGuid)
 	 */
 	
-	private class LoadHourEntriesXMLTask extends AsyncTask<String, Integer, Boolean> {
+	private class LoadHourEntriesXMLTask extends AsyncTask<String, Integer, ArrayList<S3HourEntryItem>> {
 		
-		private SevedroidProjectActivity mParent;
+		private QueryHourEntries mParent;
 		public static final int STATUS_INIT = 1;
 		public static final int STATUS_TRANSFERRING = 2;
 		public static final int STATUS_PARSING = 3;
 		public static final int STATUS_RETURNING = 4;
 		
-		public LoadHourEntriesXMLTask(SevedroidProjectActivity parent) {
+		public LoadHourEntriesXMLTask(QueryHourEntries parent) {
 			mParent = parent;
 		}
 		
 		@Override
-		protected Boolean doInBackground(String... args) {
+		protected ArrayList<S3HourEntryItem> doInBackground(String... args) {
 			Log.d(TAG,"Started doInBackground for LoadHourEntriesXMLTask!");
-			mParent.projectNameSpinner.setClickable(false);
 			publishProgress(STATUS_INIT);
 			SeveraCommsUtils scu = new SeveraCommsUtils();
 			S3HourEntryContainer S3HourEntries = S3HourEntryContainer.getInstance();
@@ -132,24 +156,13 @@ public class QueryHourEntries extends Activity implements OnClickListener,
 			//The next invocation is the one that takes time
 			publishProgress(STATUS_TRANSFERRING);
 			S3HourEntries.setHourEntriesXML(scu.getHourEntriesByDateAndUserGUID(mParent, startDate, endDate, userGuid));
-	        publishProgress(STATUS_PARSING);
-			String [] distinctCaseGuids = S3HourEntries.getDistinctCaseGUIDsFromHourEntryList(S3HourEntries.getHourEntries());
-			mParent.projectList.clear();
-			for(int i = 0; i < distinctCaseGuids.length; i++) {
-				String caseXML = scu.getCaseXMLByGUID(mParent, distinctCaseGuids[i]);
-				S3CC.setCaseXML(caseXML);
-				mParent.projectList.add(S3CC.getCase());
-			}
-			
-			publishProgress(STATUS_RETURNING);
-			if(mParent.projectList.isEmpty()) {
-				Log.e(TAG,"Project list is empty! Returning with nothing to tell.");
-				return new Boolean(false);
-			} else {
-				Log.d(TAG,"Project list is not empty, enabling projectspinner...");
-				mParent.projectNameSpinner.setClickable(true);
-				return new Boolean(true);
-			}
+	        Log.d(TAG,"Done with SOAP call, starting to parse response...");
+			publishProgress(STATUS_PARSING);
+			Log.d(TAG,"Parsing done.");
+			ArrayList<S3HourEntryItem> res = S3HourEntries.getHourEntries();
+	        publishProgress(STATUS_RETURNING);
+	        Log.d(TAG,"Background query thread returning (items: "+res.size()+")");
+	        return res;
 		}
 		
 		protected void onProgressUpdate(Integer... progress) {
@@ -158,10 +171,15 @@ public class QueryHourEntries extends Activity implements OnClickListener,
 	     }
 		
 		@Override
-		protected void onPostExecute(Boolean result) {
+		protected void onPostExecute(ArrayList<S3HourEntryItem> result) {
 			Log.d(TAG,"onPostExecute on LoadCasesXMLTask firing.");
-			mParent.receiveProjectLoadingReadyEvent();
+			mParent.receiveHoursLoadingReadyEvent();
 		}
+	}
+
+	public void receiveHoursLoadingReadyEvent() {
+		Intent listIntent = new Intent();
+		listIntent.setClass(this, ListHourEntries.class);
 	}
 
 }

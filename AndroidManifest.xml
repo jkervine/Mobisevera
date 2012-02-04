@@ -17,5 +17,6 @@
         </activity>
         <activity android:name=".SevedroidConfig"></activity>
         <activity android:name=".QueryHourEntries"></activity>
+        <activity android:name=".ListHourEntries"></activity>
     </application>
 </manifest>
