@@ -44,9 +44,12 @@ public class QueryHourEntries extends Activity implements OnClickListener,
 	protected DatePicker endDatePicker = null;
 	protected LoadHourEntriesXMLTask loadHoursTask = null;
 	protected ProgressDialog pd = null;
+
+	private static  int currentlySelectedCase = 0;
 	
 	private static final int NO_PROJECTS_DIALOG_ID = 001;
 	private static final int STARTED_HOURS_QUERY_DIALOG_ID = 002;
+	private static final int NO_HOURS_TO_SHOW_DIALOG = 003;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +71,12 @@ public class QueryHourEntries extends Activity implements OnClickListener,
 		if(projectList == null || projectList.isEmpty()) {
 			showDialog(NO_PROJECTS_DIALOG_ID);
 		} else {
+			//Insert first item to the list to indicate that user wishes to see claims for all projects
+			S3CaseItem everyProjectCaseItem = new S3CaseItem();
+			everyProjectCaseItem.setCaseInternalName("[All projects]");
+			everyProjectCaseItem.setCaseGuid(SevedroidConstants.MAGIC_CASE_GUID_FOR_ALL_WILDCARD);
+			everyProjectCaseItem.setCaseAccountName("");
+			projectList.add(0, everyProjectCaseItem );
 			projectSpinner = (Spinner)findViewById(R.id.queryui_projectnamespinner);
 			ArrayAdapter<S3CaseItem> projectAdapter = 
 					new ArrayAdapter<S3CaseItem>(this, android.R.layout.simple_spinner_dropdown_item, projectList);
@@ -94,7 +103,7 @@ public class QueryHourEntries extends Activity implements OnClickListener,
 			       });
 			AlertDialog alert = builder.create();
 			return alert;	
-		} if (id == STARTED_HOURS_QUERY_DIALOG_ID) {
+		} else if (id == STARTED_HOURS_QUERY_DIALOG_ID) {
 			pd = new ProgressDialog(this);
 			pd.setMessage("Querying hours... ");
 			pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
@@ -109,21 +118,32 @@ public class QueryHourEntries extends Activity implements OnClickListener,
 					pd.dismiss();
 				}
 			});
+		} else if(id == NO_HOURS_TO_SHOW_DIALOG) {
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setMessage("No claims found for this project.")
+			       .setCancelable(false)
+			       .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+			           public void onClick(DialogInterface dialog, int id) {
+			                QueryHourEntries.this.finish();
+			           }
+			       });
+			AlertDialog alert = builder.create();
+			return alert;	
 		}
 		return null;
 	}
 	
 	@Override
-	public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2,
-			long arg3) {
-		// TODO Auto-generated method stub
-
+	public void onItemSelected(AdapterView<?> adapterView, View view, int position,
+			long id) {
+		QueryHourEntries.currentlySelectedCase = position;
+		Log.d(TAG,"Selecting position:"+position);
 	}
 
 	@Override
-	public void onNothingSelected(AdapterView<?> arg0) {
-		// TODO Auto-generated method stub
-
+	public void onNothingSelected(AdapterView<?> adapterView) {
+		QueryHourEntries.currentlySelectedCase = 0;
+		Log.d(TAG,"Selecting position 0.");
 	}
 
 	@Override
@@ -220,9 +240,29 @@ public class QueryHourEntries extends Activity implements OnClickListener,
 		Intent listIntent = new Intent();
 		listIntent.setClass(this, ListHourEntries.class);
 		Bundle bundle = new Bundle();
-		bundle.putParcelableArrayList(ListHourEntries.HOUR_ENTRIES_KEY, hoursList);
-		listIntent.putExtras(bundle);
-		startActivity(listIntent);
+		if(QueryHourEntries.currentlySelectedCase == 0) {
+			bundle.putParcelableArrayList(ListHourEntries.HOUR_ENTRIES_KEY, hoursList);
+			Log.d(TAG,"As all cases are selected, not filtering.");
+		} else {
+			String currentlySelectedCaseGUID = projectList.get(QueryHourEntries.currentlySelectedCase).getCaseGuid();
+			Log.d(TAG,"Currently selected case GUID:"+currentlySelectedCaseGUID);
+			for(int i = 0; i < hoursList.size(); i++) {
+				if(hoursList.get(i).getCaseGuid().equalsIgnoreCase(currentlySelectedCaseGUID)) {
+					// ok, keep in list
+				} else {
+					// remove hour entry since user doesn't want to see this
+					hoursList.remove(i);
+				}
+			}
+			Log.d(TAG,"After filtering, hours list contains "+hoursList.size()+" entries.");
+			bundle.putParcelableArrayList(ListHourEntries.HOUR_ENTRIES_KEY, hoursList);
+		}
+		if(hoursList.size() == 0) {
+			showDialog(NO_HOURS_TO_SHOW_DIALOG);
+			return;
+		} else {
+			listIntent.putExtras(bundle);
+			startActivity(listIntent);
+		}
 	}
-
 }
