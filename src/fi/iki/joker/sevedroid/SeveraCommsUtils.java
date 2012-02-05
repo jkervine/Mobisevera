@@ -22,6 +22,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -169,7 +170,11 @@ public class SeveraCommsUtils {
 				    	Log.d(TAG,"S3 Response (supressed):"+new String(responseBytes).substring(0, 1024));
 				    }
 				    return res;
-				} catch (IOException e) {
+				} catch (SocketTimeoutException ste) {	
+					//TODO: This should be universally handled somehow. Connection problems should be detected and dialog shown..
+					Log.e(TAG, "Got SocketTimeOutException..:"+ste.getMessage(),ste);
+					return null;
+				}  catch (IOException e) {
 					Log.e(TAG, "Got IOException while connecting to S3 SOAP URL..."+e.getMessage(),e);
 					res.setResponseCode(httpResponseCode);
 					res.setResponseXML(null);

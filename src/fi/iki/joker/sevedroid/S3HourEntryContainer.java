@@ -38,7 +38,7 @@ public class S3HourEntryContainer {
 	private static final String XPATH_HOURENTRY_CASEGUID = 
 			"/s:Envelope/s:Body/x:GetHourEntriesByDateAndUserGUIDResponse/x:GetHourEntriesByDateAndUserGUIDResult/a:HourEntry/a:CaseGUID";
 	private static final String XPATH_HOURENTRY_DESCRIPTION = 
-			"/s:Envelope/s:Body/x:GetHourEntriesByDateAndUserGUIDResponse/x:GetHourEntriesByDateAndUserGUIDResult/a:HourEntry/a:CaseGUID";
+			"/s:Envelope/s:Body/x:GetHourEntriesByDateAndUserGUIDResponse/x:GetHourEntriesByDateAndUserGUIDResult/a:HourEntry/a:Description";
 
 	private S3HourEntryContainer() {
 		

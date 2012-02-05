@@ -8,6 +8,8 @@ import android.app.ListActivity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.widget.ArrayAdapter;
 
 public class ListHourEntries extends ListActivity {
 
@@ -16,9 +18,12 @@ public class ListHourEntries extends ListActivity {
 	private static final int DIALOG_ID_INTENT_NULL = 0;
 	private static final int DIALOG_ID_EXTRAS_BUNDLE_NULL = 1;
 	private static final int DIALOG_ID_PARCEL_ATTRS_NULL = 2;
+
+	private static final String TAG = "Sevedroid";
 	
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		Log.d(TAG, "ListHourEntries onCreate called.");
 		setContentView(R.layout.hours_list);
 		Intent hoursListIntent = getIntent();
 		if(hoursListIntent == null) {
@@ -35,6 +40,8 @@ public class ListHourEntries extends ListActivity {
 			showDialog(DIALOG_ID_PARCEL_ATTRS_NULL);
 			return;
 		}
+		this.setListAdapter(new ArrayAdapter<S3HourEntryItem>(this,android.R.layout.simple_list_item_1,listItems));
+		Log.d(TAG, "onCreate done.");
 	}
 
 	@Override
