@@ -56,8 +56,6 @@ public class SevedroidProjectActivity extends Activity implements OnItemSelected
 	private boolean stateRestored = false;
 	
 	private Calendar claimDate = null;
-	// this is the date format S3 api accepts
-	SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 	/**
 	 * The list containing the Cases this user id has access to and the parcel identifier
 	 */
@@ -437,7 +435,7 @@ public class SevedroidProjectActivity extends Activity implements OnItemSelected
 				if(claimDate == null) {
 						claimDate = Calendar.getInstance();
 				}
-				String eventDate = formatter.format(claimDate.getTime());
+				String eventDate = SevedroidConstants.S3_DATE_FORMATTER.format(claimDate.getTime());
 				String phaseGuid = this.currentPhaseGUID;
 				String hours = ((EditText)findViewById(R.id.hours_amount)).getText().toString();
 				String minutes = ((EditText)findViewById(R.id.minutes_amount)).getText().toString();

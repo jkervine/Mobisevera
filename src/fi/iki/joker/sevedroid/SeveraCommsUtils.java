@@ -319,6 +319,7 @@ public class SeveraCommsUtils {
 		S3Response res = null;
 		String soapBody = SevedroidConstants.SOAP_AUTHN_ENVELOPE.replace(
 				SevedroidConstants.SOAP_BODY_SUBSTR, SevedroidConstants.HOUR_ENTRY_BODY);
+		//TODO: Here, during one start I had a NPE... investigate at some point...?
 		String soapMessage = soapBody.replace(SevedroidConstants.HOUR_ENTRY_DESC_SUBSTR, description);
 		soapMessage = soapMessage.replace(SevedroidConstants.HOUR_ENTRY_EVENT_DATE_SUBSTR, eventDate);
 		soapMessage = soapMessage.replace(SevedroidConstants.HOUR_ENTRY_PHASE_GUID_SUBSTR, phaseGuid);
@@ -344,9 +345,9 @@ public class SeveraCommsUtils {
 		S3Response res = null;
 		String soapBody = SevedroidConstants.SOAP_AUTHN_ENVELOPE.replace(
 					SevedroidConstants.SOAP_BODY_SUBSTR, SevedroidConstants.GET_HOUR_ENTRIES_BY_DATE_AND_USER_GUID_BODY);
-		String soapMessage = soapBody.replace(SevedroidConstants.USER_GUID_HERE,userGuid);
-		soapMessage = soapBody.replace(SevedroidConstants.FIRST_HOUR_ENTRY_DATE_HERE, startDate);
-		soapMessage = soapBody.replace(SevedroidConstants.LAST_HOUR_ENTRY_DATE_HERE, endDate);
+		String soapMessage = soapBody.replace(SevedroidConstants.HOUR_ENTRY_USER_GUID_HERE,userGuid);
+		soapMessage = soapMessage.replace(SevedroidConstants.FIRST_HOUR_ENTRY_DATE_HERE, startDate);
+		soapMessage = soapMessage.replace(SevedroidConstants.LAST_HOUR_ENTRY_DATE_HERE, endDate);
 		res = requestWithMessage(parent, soapMessage, SevedroidConstants.SOAP_ACTION_GET_HOURENTRIES_BY_DATE_AND_USER_GUID);
 		if (res == null) {
 			Log.d(TAG, "Respoanse was null whic getting hour entries by date, userguid.");

@@ -1,6 +1,7 @@
 package fi.iki.joker.sevedroid;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -17,6 +18,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.Spinner;
 
 public class QueryHourEntries extends Activity implements OnClickListener,
@@ -38,6 +40,8 @@ public class QueryHourEntries extends Activity implements OnClickListener,
 	
 	protected Spinner projectSpinner = null;
 	protected boolean queryCancelled = false;
+	protected DatePicker startDatePicker = null;
+	protected DatePicker endDatePicker = null;
 	protected LoadHourEntriesXMLTask loadHoursTask = null;
 	protected ProgressDialog pd = null;
 	
@@ -71,6 +75,8 @@ public class QueryHourEntries extends Activity implements OnClickListener,
 	        projectSpinner.setAdapter(projectAdapter);
 	        projectSpinner.setOnItemSelectedListener(this);
 		}
+		startDatePicker = (DatePicker)findViewById(R.id.datePickerFromDate);
+		endDatePicker = (DatePicker)findViewById(R.id.datePickerToDate);
 		Button submitButton = (Button)findViewById(R.id.query_button_id);
 		submitButton.setOnClickListener(this);
 	}
@@ -122,8 +128,35 @@ public class QueryHourEntries extends Activity implements OnClickListener,
 
 	@Override
 	public void onClick(View buttonView) {
+		
+		Log.d(TAG, "onClick on the QueryHourentries.");
+		//get parameters: startDate, endDate, userGuid
+		Calendar startDateCal = Calendar.getInstance();
+		startDateCal.set(startDatePicker.getYear(), startDatePicker.getMonth(), startDatePicker.getDayOfMonth());
+		
+		String startDateStr = SevedroidConstants.S3_DATE_FORMATTER.format(startDateCal.getTime());
+		Calendar endDateCal = Calendar.getInstance();
+		endDateCal.set(endDatePicker.getYear(), endDatePicker.getMonth(), endDatePicker.getDayOfMonth());
+		String endDateStr = SevedroidConstants.S3_DATE_FORMATTER.format(endDateCal.getTime());
+		
+		if(startDateStr != null && startDateStr.length() == 10) { //"yyyy-MM-dd".length == 10 
+			Log.d(TAG,"StartDateStr is:"+startDateStr);
+		} else {
+			throw new IllegalStateException("startDateString is null or of wrong length! ("+startDateStr+")");
+		}
+		if(endDateStr != null && endDateStr.length() == 10) { //"yyyy-MM-dd".length == 10 
+			Log.d(TAG,"EndDateStr is:"+endDateStr);
+		} else {
+			throw new IllegalStateException("endDateString is null or of wrong length! ("+endDateStr+")");
+		}
+			
+		SevedroidContentStore scs = new SevedroidContentStore(this);
+		String userGuid = scs.fetchUserGUID();
+		if(userGuid == null) {
+			throw new IllegalStateException("UserGuid is null - cannot query hours.");
+		}
 		loadHoursTask = new LoadHourEntriesXMLTask(this);
-		loadHoursTask.execute();
+		loadHoursTask.execute(startDateStr, endDateStr, userGuid);
 	}
 	
 	/**
@@ -147,6 +180,12 @@ public class QueryHourEntries extends Activity implements OnClickListener,
 		protected ArrayList<S3HourEntryItem> doInBackground(String... args) {
 			Log.d(TAG,"Started doInBackground for LoadHourEntriesXMLTask!");
 			publishProgress(STATUS_INIT);
+			//expecting three String parameters; startDate, endDate, userGuid
+			if(args != null && args.length == 3) {
+				Log.d(TAG,"Good parameters, start to load hours...");
+			} else {
+				throw new IllegalArgumentException("Null or wrong amount of arguments for the background thread (loadHours).");
+			}
 			SeveraCommsUtils scu = new SeveraCommsUtils();
 			S3HourEntryContainer S3HourEntries = S3HourEntryContainer.getInstance();
 			S3CaseContainer S3CC = S3CaseContainer.getInstance();
@@ -173,13 +212,17 @@ public class QueryHourEntries extends Activity implements OnClickListener,
 		@Override
 		protected void onPostExecute(ArrayList<S3HourEntryItem> result) {
 			Log.d(TAG,"onPostExecute on LoadCasesXMLTask firing.");
-			mParent.receiveHoursLoadingReadyEvent();
+			mParent.receiveHoursLoadingReadyEvent(result);
 		}
 	}
 
-	public void receiveHoursLoadingReadyEvent() {
+	public void receiveHoursLoadingReadyEvent(ArrayList<S3HourEntryItem> hoursList) {
 		Intent listIntent = new Intent();
 		listIntent.setClass(this, ListHourEntries.class);
+		Bundle bundle = new Bundle();
+		bundle.putParcelableArrayList(ListHourEntries.HOUR_ENTRIES_KEY, hoursList);
+		listIntent.putExtras(bundle);
+		startActivity(listIntent);
 	}
 
 }

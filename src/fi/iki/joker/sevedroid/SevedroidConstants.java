@@ -1,9 +1,12 @@
 package fi.iki.joker.sevedroid;
 
+import java.text.SimpleDateFormat;
+
 public class SevedroidConstants {
 	
 	protected static final String APP_VERSION = "0.5beta";
 	protected static final String HTTPCLIENT_USERAGENT = "Sevedroid Android Application v."+APP_VERSION;
+	protected static final String DF_SUPPORT_EMAIL = "support@digitalfingertip.com";
 	
 	protected static final String API_KEY_SUBSTR = "%API_KEY_HERE%";
 	protected static final String SOAP_BODY_SUBSTR = "%BODY_CONTENT_HERE%";
@@ -15,13 +18,15 @@ public class SevedroidConstants {
 
 	protected static final int CODE_INTERNAL_SERVER_ERROR = 500;
 	
+	protected static final SimpleDateFormat S3_DATE_FORMATTER = new SimpleDateFormat("yyyy-MM-dd");
+	
 	protected static final String SOAP_ACTION_GET_USER_BY_NAME = "http://soap.severa.com/IUser/GetUserByName";
 	protected static final String SOAP_ACTION_GET_ALL_CASES = "http://soap.severa.com/ICase/GetAllCases";
 	protected static final String SOAP_ACTION_GET_CASE_BY_GUID = "http://soap.severa.com/ICase/GetCaseByGUID";
 	protected static final String SOAP_ACTION_GET_PHASES_BY_CASE_GUID = "http://soap.severa.com/IPhase/GetPhasesByCaseGUID";
 	protected static final String SOAP_ACTION_GET_WORKTYPES_BY_PHASE_GUID = "http://soap.severa.com/IWorkType/GetWorkTypesByPhaseGUID";
 	protected static final String SOAP_ACTION_PUBLISH_HOURENTRY = "http://soap.severa.com/IHourEntry/AddNewHourEntry";
-	protected static final String SOAP_ACTION_GET_HOURENTRIES_BY_DATE_AND_USER_GUID = "http://soap.severa.com/GetHourEntriesByDateAndUserGUID";
+	protected static final String SOAP_ACTION_GET_HOURENTRIES_BY_DATE_AND_USER_GUID = "http://soap.severa.com/IHourEntry/GetHourEntriesByDateAndUserGUID";
 	
 	protected static final String SOAP_AUTHN_ENVELOPE = 
 			"<SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:sev=\"http://schemas.datacontract.org/2004/07/Severa.Entities.API\" xmlns:ns1 = \"http://soap.severa.com/\">"+
@@ -130,11 +135,11 @@ public class SevedroidConstants {
 	
 	protected static final String FIRST_HOUR_ENTRY_DATE_HERE = "%FIRST_HOUR_ENTRY_DATE_HERE%";
 	protected static final String LAST_HOUR_ENTRY_DATE_HERE = "%LAST_HOUR_ENTRY_DATE_HERE%";
-	protected static final String USER_GUID_HERE = "%USER_GUID_HERE%";
+	protected static final String HOUR_ENTRY_USER_GUID_HERE = "%USER_GUID_HERE%";
 	
-	protected static final String GET_HOUR_ENTRIES_BY_DATE_AND_USER_GUID_BODY = "<soap:GetHourEntriesByDateAndUserGUID>"+
-         "<soap:startdate>"+FIRST_HOUR_ENTRY_DATE_HERE+"</soap:startdate>"+
-         "<soap:enddate>"+LAST_HOUR_ENTRY_DATE_HERE+"</soap:enddate>"+
-         "<soap:userGUID>"+USER_GUID_HERE+"</soap:userGUID>"+
-         "</soap:GetHourEntriesByDateAndUserGUID>";
+	protected static final String GET_HOUR_ENTRIES_BY_DATE_AND_USER_GUID_BODY = "<ns1:GetHourEntriesByDateAndUserGUID>"+
+         "<ns1:startdate>"+FIRST_HOUR_ENTRY_DATE_HERE+"</ns1:startdate>"+
+         "<ns1:enddate>"+LAST_HOUR_ENTRY_DATE_HERE+"</ns1:enddate>"+
+         "<ns1:userGUID>"+HOUR_ENTRY_USER_GUID_HERE+"</ns1:userGUID>"+
+         "</ns1:GetHourEntriesByDateAndUserGUID>";
 }
