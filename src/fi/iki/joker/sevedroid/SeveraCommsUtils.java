@@ -319,12 +319,12 @@ public class SeveraCommsUtils {
 
 	public boolean publishHourEntry(Activity parent, String description,
 			String eventDate, String phaseGuid, String quantity,
-			String userGuid, String workTypeGuid) {
-		// 	
+			String userGuid, String workTypeGuid) { 	
+		Log.d(TAG,"Publish hour entry args: "+description+":"+eventDate+":"+phaseGuid+":"+quantity+":"+userGuid+":"+workTypeGuid);
 		S3Response res = null;
 		String soapBody = SevedroidConstants.SOAP_AUTHN_ENVELOPE.replace(
 				SevedroidConstants.SOAP_BODY_SUBSTR, SevedroidConstants.HOUR_ENTRY_BODY);
-		//TODO: Here, during one start I had a NPE... investigate at some point...?
+		//TODO:Test what happens here is some of the dropdowns are not selected (but have their default value)
 		String soapMessage = soapBody.replace(SevedroidConstants.HOUR_ENTRY_DESC_SUBSTR, description);
 		soapMessage = soapMessage.replace(SevedroidConstants.HOUR_ENTRY_EVENT_DATE_SUBSTR, eventDate);
 		soapMessage = soapMessage.replace(SevedroidConstants.HOUR_ENTRY_PHASE_GUID_SUBSTR, phaseGuid);

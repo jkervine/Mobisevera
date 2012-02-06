@@ -31,9 +31,9 @@
 <!-- The amounts of time row -->
 <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/linearLayoutTimeAmount">
     <TextView android:id="@+id/textView3" android:layout_width="wrap_content" android:textAppearance="?android:attr/textAppearanceMedium" android:layout_height="wrap_content" android:text="@string/amount_hours_text"></TextView>
-	<EditText android:layout_width="match_parent" android:id="@+id/hours_amount" android:layout_height="wrap_content" android:inputType="number"></EditText>
+	<EditText android:layout_width="match_parent" android:ems="2" android:id="@+id/hours_amount" android:layout_height="wrap_content" android:inputType="number"></EditText>
 	<TextView android:id="@+id/textView4" android:layout_width="wrap_content" android:textAppearance="?android:attr/textAppearanceMedium" android:layout_height="wrap_content" android:text="@string/amount_minutes_text"></TextView>
-	<EditText android:layout_width="match_parent" android:id="@+id/minutes_amount" android:layout_height="wrap_content" android:inputType="number"></EditText>
+	<EditText android:layout_width="match_parent" android:ems="2" android:id="@+id/minutes_amount" android:layout_height="wrap_content" android:inputType="number"></EditText>
 </LinearLayout>
 <!-- The spinners for selecting the project / phase and edittext for explanation -->
 <TextView android:textAppearance="?android:attr/textAppearanceSmall" android:layout_height="wrap_content" android:text="@string/claim_projectname_text" android:layout_width="wrap_content" android:id="@+id/textView2"></TextView>
