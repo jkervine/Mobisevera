@@ -54,6 +54,9 @@ public class SevedroidProjectActivity extends Activity implements OnItemSelected
 	private static final int DATE_PICKER_DIALOG_ID = 0;
 	private static final int NOT_CONNECTED_DIALOG_ID = 1;
 	private boolean stateRestored = false;
+	private boolean fullyCreated = false;
+	
+	private static final String FULLY_CREATED_BOOL_KEY = "fullyCreatedBoolean";
 	
 	private Calendar claimDate = null;
 	/**
@@ -110,7 +113,13 @@ public class SevedroidProjectActivity extends Activity implements OnItemSelected
         Log.d(TAG,"OnCreate called!");
         if(savedInstanceState == null) {
         	Log.d(TAG, "Saved instance state is null, recreating Activity state.");
-        } else {
+        	stateRestored = false;
+        } else if (savedInstanceState != null && savedInstanceState.getBoolean(FULLY_CREATED_BOOL_KEY) == false) {
+        	//this is the case that the activity was not fully constructed since user started it the first
+        	//time and we needed to ask for the API key.
+        	Log.d(TAG, "Saved instance state is not null, but still restoring Activity state (not fully created)...");
+        	stateRestored = false;
+        }	else {
         	Log.d(TAG, "Saved instance state is not null, restoring Activity state...");
         	projectList = savedInstanceState.getParcelableArrayList(CASEITEMLIST_PARCEL_ID);
         	phaseList = savedInstanceState.getParcelableArrayList(PHASEITEMLIST_PARCEL_ID);
@@ -138,11 +147,11 @@ public class SevedroidProjectActivity extends Activity implements OnItemSelected
     
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
-		// TODO Save List instances here
 		Log.d(TAG,"onSaveInstanceState called!");
 		outState.putParcelableArrayList(CASEITEMLIST_PARCEL_ID, projectList);
 		outState.putParcelableArrayList(PHASEITEMLIST_PARCEL_ID, phaseList);
 		outState.putParcelableArrayList(WORKTYPEITEMLIST_PARCEL_ID, workTypeList);
+		outState.putBoolean(FULLY_CREATED_BOOL_KEY,fullyCreated);
     	super.onSaveInstanceState(outState);
 	}
 
@@ -205,7 +214,7 @@ public class SevedroidProjectActivity extends Activity implements OnItemSelected
         workTypeSpinner.setAdapter(workTypeAdapter);
         
         claimDate = Calendar.getInstance();
-        
+        fullyCreated = true;
         Log.d(TAG,"OnCreate for main activity done.");
 
     }
@@ -218,7 +227,8 @@ public class SevedroidProjectActivity extends Activity implements OnItemSelected
 		if(requestCode == SevedroidProjectActivity.requestCode && resultCode == Activity.RESULT_OK) {
 			Log.d(TAG,"API KEY input finished with ok result... re-create!");
 			//TODO: Some happy day, change this to Activity.reCreate(), api level 11
-			runOnCreate();
+			stateRestored = false;
+			Log.d(TAG, "Here we relie on onCreate for being called when the sevedroidConfig finishes.");
 		} else {
 			Log.d(TAG,"Received activity result:"+resultCode+
 					" with owner requestCode of "+requestCode+", but don't know what to do with it");
