@@ -1,5 +1,7 @@
 package fi.iki.joker.sevedroid;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -13,6 +15,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -809,7 +812,7 @@ public class SevedroidProjectActivity extends Activity implements OnItemSelected
 		@Override
 		protected Boolean doInBackground(String... params) {
 			//gather necessary parameters
-			String description = params[0];
+			String description = TextUtils.htmlEncode(params[0]);
 			String eventDate = params[1];
 			String phaseGuid = params[2];
 			String quantity = params[3];
