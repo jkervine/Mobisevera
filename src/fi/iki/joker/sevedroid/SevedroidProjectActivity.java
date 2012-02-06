@@ -51,8 +51,20 @@ public class SevedroidProjectActivity extends Activity implements OnItemSelected
 	private static final int optionsMenuId = 1;
 	private SeveraCommsUtils mScu = null;
 	private static final int requestCode = 1;
+	
+	// IDs for various dialog views
+	
 	private static final int DATE_PICKER_DIALOG_ID = 0;
 	private static final int NOT_CONNECTED_DIALOG_ID = 1;
+	private static final int DIALOG_ID_MISSING_CASEGUID = 2;
+	private static final int DIALOG_ID_MISSING_PHASE_GUID = 3;
+	private static final int DIALOG_ID_MISSING_DESCRIPTION = 4;
+	private static final int DIALOG_ID_BAD_WORKTYPE_GUID = 5;
+	private static final int DIALOG_ID_BAD_USER_GUID = 6;
+	private static final int DIALOG_ID_BAD_HOURS_QUANTITY = 7;
+	private static final int DIALOG_ID_BAD_EVENT_DATE = 8;
+
+	
 	private boolean stateRestored = false;
 	private boolean fullyCreated = false;
 	
@@ -326,6 +338,10 @@ public class SevedroidProjectActivity extends Activity implements OnItemSelected
 			} else {
 				String caseGuid = projectList.get(position).getCaseGuid();
 				Log.d(TAG,"User selected case pos: "+position+" with GUID: "+caseGuid);
+				if(caseGuid == null || caseGuid.isEmpty()) {
+					showDialog(DIALOG_ID_MISSING_CASEGUID);
+					return;
+				}
 				phasesProgress.setVisibility(View.VISIBLE);
 				new LoadPhasesXMLTask(this).execute(caseGuid);
 			}
@@ -339,6 +355,11 @@ public class SevedroidProjectActivity extends Activity implements OnItemSelected
 				Log.d(TAG,"Phase Name for claiming:"+phaseList.get(position).getPhaseName());
 				String phaseGuid = phaseList.get(position).getPhaseGUID();
 				this.currentPhaseGUID = phaseGuid;
+				Log.d(TAG,"Setting currentPhaseGUID:"+this.currentPhaseGUID);
+				if(phaseGuid == null || phaseGuid.isEmpty()) {
+					showDialog(DIALOG_ID_MISSING_PHASE_GUID);
+					return;
+				}
 				new LoadWorkTypesXMLTask(this).execute(phaseGuid);
 			}
 		} else if(adapterView.getId() == R.id.worktypespinner) {
@@ -448,17 +469,41 @@ public class SevedroidProjectActivity extends Activity implements OnItemSelected
 			case R.id.button_claim:
 				Log.d(TAG,"Started to claim...");
 				String description = ((EditText)findViewById(R.id.explanation_text)).getText().toString();
+				if(description == null || description.isEmpty()) {
+					showDialog(DIALOG_ID_MISSING_DESCRIPTION);
+					return;
+				}
 				if(claimDate == null) {
 						claimDate = Calendar.getInstance();
 				}
 				String eventDate = SevedroidConstants.S3_DATE_FORMATTER.format(claimDate.getTime());
+				if(eventDate == null || eventDate.isEmpty()) {
+					showDialog(DIALOG_ID_BAD_EVENT_DATE);
+					return;
+				}
 				String phaseGuid = this.currentPhaseGUID;
+				if(phaseGuid == null || phaseGuid.isEmpty()) {
+					showDialog(DIALOG_ID_MISSING_PHASE_GUID);
+					return;
+				}
 				String hours = ((EditText)findViewById(R.id.hours_amount)).getText().toString();
 				String minutes = ((EditText)findViewById(R.id.minutes_amount)).getText().toString();
 				String quantity = hours+"."+Math.round((Integer.parseInt(minutes))/0.6);
+				if(quantity == null || quantity.isEmpty()) {
+					showDialog(DIALOG_ID_BAD_HOURS_QUANTITY);
+					return;
+				}
 				SevedroidContentStore scs = new SevedroidContentStore(this);
 				String userGuid = scs.fetchUserGUID();
+				if(userGuid == null || userGuid.isEmpty()) {
+					showDialog(DIALOG_ID_BAD_USER_GUID);
+					return;
+				}
 				String workTypeGuid = this.currentWorkTypeGUID;
+				if(workTypeGuid == null || workTypeGuid.isEmpty()) {
+					showDialog(DIALOG_ID_BAD_WORKTYPE_GUID);
+					return;
+				}
 				String [] params = {description, eventDate, phaseGuid, quantity, userGuid, workTypeGuid};
 				new PublishHourEntryTask(this).execute(params);
 				break;
@@ -519,6 +564,7 @@ public class SevedroidProjectActivity extends Activity implements OnItemSelected
 					claimDate.get(Calendar.MONTH),
 					claimDate.get(Calendar.DAY_OF_MONTH));
 		}
+		// Critical Alert Dialogs
 		if(id == NOT_CONNECTED_DIALOG_ID) {
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
 			builder.setMessage("This application requires a network connection.")
@@ -531,7 +577,44 @@ public class SevedroidProjectActivity extends Activity implements OnItemSelected
 			AlertDialog alert = builder.create();
 			return alert;	
 		}
-		return null;
+		// Non-critical but blocking dialogs
+		String alertMessage = "(UNSPECIFIED)";
+		switch(id) {
+			case DIALOG_ID_MISSING_CASEGUID:
+				alertMessage = "Missing GUID For Case. Most likely this is a bug. Please report bugs to:"+
+						SevedroidConstants.DF_SUPPORT_EMAIL;
+				break;
+			case DIALOG_ID_MISSING_PHASE_GUID: 
+				alertMessage = "Missing GUID for Phase. Most likely this is a bug. Please report bugs to:"+
+						SevedroidConstants.DF_SUPPORT_EMAIL;
+				break;
+			case DIALOG_ID_MISSING_DESCRIPTION:
+				alertMessage = "You hours claim is missing description.";
+				break;
+			case DIALOG_ID_BAD_WORKTYPE_GUID:
+				alertMessage = "Work type for this claim is missing.";
+				break;
+			case DIALOG_ID_BAD_USER_GUID:
+				alertMessage = "User's unique ID is missing. Most likely this is a bug. Please report bugs to:"+
+						SevedroidConstants.DF_SUPPORT_EMAIL;
+				break;
+			case DIALOG_ID_BAD_HOURS_QUANTITY:
+				alertMessage = "The hours quantity is not proper.";
+				break;
+			case DIALOG_ID_BAD_EVENT_DATE:
+				alertMessage = "The date for this claim is empty or missing.";
+				break;
+		}
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setMessage(alertMessage)
+			.setCancelable(false)
+			.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
+					return;
+				}
+			});
+		AlertDialog alert = builder.create();
+		return alert;	
 	}
 
 	//TODO: Make these asynctasks go away from this already bloated class
@@ -607,6 +690,9 @@ public class SevedroidProjectActivity extends Activity implements OnItemSelected
 		@Override
 		protected Boolean doInBackground(String... caseGuid) {
 			Log.d(TAG,"Started doInBackground for LoadPhasesXMLTask!");
+			if(caseGuid != null && !caseGuid[0].isEmpty()) {
+				Log.d(TAG, "Parameters checked OK.");
+			} 
 			mParent.projectPhaseSpinner.setClickable(false);
 			publishProgress(STATUS_INIT);
 			SeveraCommsUtils scu = new SeveraCommsUtils();
@@ -635,7 +721,12 @@ public class SevedroidProjectActivity extends Activity implements OnItemSelected
 		@Override
 		protected void onPostExecute(Boolean result) {
 			Log.d(TAG,"onPostExecute on LoadCasesXMLTask firing.");
-			mParent.receivePhasesLoadingReadyEvent();
+			if(result == null) {
+				
+			} else {
+				mParent.receivePhasesLoadingReadyEvent();
+		
+			}
 		}
 	}
 	
@@ -658,6 +749,9 @@ public class SevedroidProjectActivity extends Activity implements OnItemSelected
 		@Override
 		protected Boolean doInBackground(String... phaseGuid) {
 			Log.d(TAG,"Started doInBackground for LoadPhasesXMLTask!");
+			if(phaseGuid != null && phaseGuid[0].isEmpty()) {
+				Log.d(TAG,"Paramters checked OK.");
+			} 
 			mParent.workTypeSpinner.setClickable(false);
 			publishProgress(STATUS_INIT);
 			SeveraCommsUtils scu = new SeveraCommsUtils();
