@@ -269,6 +269,12 @@ public class SevedroidProjectActivity extends Activity implements OnItemSelected
 			Log.d(TAG,"QueryHourEntries Activity starting...");
 			this.startActivity(queryIntent);
 			break;
+		case R.id.refresh:
+			this.projectList = null;
+			this.phaseList = null;
+			this.workTypeList = null;
+			runOnCreate();
+			break;
 		}
 		
 		return super.onOptionsItemSelected(item);
