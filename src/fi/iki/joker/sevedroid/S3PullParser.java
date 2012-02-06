@@ -24,10 +24,8 @@ public class S3PullParser {
 			xpp.setInput(new StringReader(envelope));
 			this.ProcessDocument(xpp);
 		} catch (XmlPullParserException e) {
-			// TODO Auto-generated catch block
 			Log.e(TAG, "Failed to parse:"+e.getMessage());
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -50,7 +48,6 @@ public class S3PullParser {
 
 	public static LinkedList<S3CaseContainer> parseAllCasesXML(
 			String allCasesXml) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 	

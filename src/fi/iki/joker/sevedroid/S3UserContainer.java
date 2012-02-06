@@ -84,7 +84,6 @@ public class S3UserContainer {
 			languageNodes = (NodeList)xpath.evaluate(XPATH_USER_LANGUAGE,inputSource,XPathConstants.NODESET);
 			Log.d(TAG,"languageNodes match:"+languageNodes.getLength()+" items.");
 		} catch (XPathExpressionException e) {
-			// TODO Auto-generated catch block
 			Log.e(TAG,"XPathExpression evaluation failed, exception is:",e);
 			return null;
 		}

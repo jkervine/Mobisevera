@@ -171,6 +171,8 @@ public class SevedroidProjectActivity extends Activity implements OnItemSelected
 	}
 
 	private void runOnCreate() {
+		//TODO: we should remove the items from spinners which are inactive.
+		// i.e. is phases are inactive, they should be removed and cases with no active phases should be likewise removed
     	// make progress indicators global, hide before use
         projectsProgress = (ProgressBar)findViewById(R.id.projectsProgressBar);
         phasesProgress = (ProgressBar)findViewById(R.id.phasesProgressBar);
@@ -238,7 +240,6 @@ public class SevedroidProjectActivity extends Activity implements OnItemSelected
     
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		// TODO Auto-generated method stub
 		if(requestCode == SevedroidProjectActivity.requestCode && resultCode == Activity.RESULT_OK) {
 			Log.d(TAG,"API KEY input finished with ok result... re-create!");
 			//TODO: Some happy day, change this to Activity.reCreate(), api level 11
@@ -254,7 +255,6 @@ public class SevedroidProjectActivity extends Activity implements OnItemSelected
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		// TODO Auto-generated method stub
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.mainmenu, menu);
 		return true;
@@ -266,7 +266,6 @@ public class SevedroidProjectActivity extends Activity implements OnItemSelected
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		// TODO Auto-generated method stub
 		Log.d(TAG,"OnOptionsItemSelected...");
 		switch (item.getItemId()) {
 		case R.id.input_api_key_option:
@@ -560,7 +559,6 @@ public class SevedroidProjectActivity extends Activity implements OnItemSelected
 	
 	@Override
 	protected Dialog onCreateDialog(int id) {
-		// TODO Auto-generated method stub
 		if(id == DATE_PICKER_DIALOG_ID) {
 			return new DatePickerDialog(this, mDateSetListener, 
 					claimDate.get(Calendar.YEAR),
@@ -836,7 +834,6 @@ public class SevedroidProjectActivity extends Activity implements OnItemSelected
 
 		@Override
 		protected void onProgressUpdate(Integer... values) {
-			// TODO Auto-generated method stub
 			super.onProgressUpdate(values);
 		}
 		

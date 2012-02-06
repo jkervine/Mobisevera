@@ -79,7 +79,6 @@ public class S3WorkTypeContainer {
 			guidNodes = (NodeList)xpath.evaluate(XPATH_WORKTYPE_GUID,inputSource,XPathConstants.NODESET);
 			Log.d(TAG,"guidNodes match:"+guidNodes.getLength()+" items.");
 		} catch (XPathExpressionException e) {
-			// TODO Auto-generated catch block
 			Log.e(TAG,"XPathExpression evaluation failed, exception is:",e);
 			return null;
 		}

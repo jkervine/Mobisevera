@@ -109,7 +109,6 @@ public class S3CaseContainer {
 			guidNodes = (NodeList)xpath.evaluate(XPATH_CASE_GUIDS,inputSource,XPathConstants.NODESET);
 			Log.d(TAG,"guidNodes match:"+guidNodes.getLength()+" items.");
 		} catch (XPathExpressionException e) {
-			// TODO Auto-generated catch block
 			Log.e(TAG,"XPathExpression evaluation failed, exception is:",e);
 			return null;
 		}
@@ -159,7 +158,6 @@ public class S3CaseContainer {
 			guidNode = (Node)xpath.evaluate(XPATH_CASE_GUIDS,inputSource,XPathConstants.NODE);
 			Log.d(TAG,"guidNodes match:"+guidNode+" items.");
 		} catch (XPathExpressionException e) {
-			// TODO Auto-generated catch block
 			Log.e(TAG,"XPathExpression evaluation failed, exception is:",e);
 			return null;
 		}

@@ -74,7 +74,6 @@ public class S3HourEntryContainer {
 			guidNodes = (NodeList)xpath.evaluate(XPATH_HOURENTRY_CASEGUID,inputSource,XPathConstants.NODESET);
 			Log.d(TAG,"guidNodes match:"+guidNodes.getLength()+" items.");
 		} catch (XPathExpressionException e) {
-			// TODO Auto-generated catch block
 			Log.e(TAG,"XPathExpression evaluation failed, exception is:",e);
 			return null;
 		}

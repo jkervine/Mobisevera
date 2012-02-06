@@ -24,7 +24,6 @@ public class SevedroidConfig extends Activity implements OnCheckedChangeListener
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.apikeyinput);
 		mContentStore = new SevedroidContentStore(this);
