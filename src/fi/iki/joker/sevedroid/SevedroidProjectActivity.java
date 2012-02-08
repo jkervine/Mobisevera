@@ -293,7 +293,11 @@ public class SevedroidProjectActivity extends Activity implements OnItemSelected
 			this.projectList = null;
 			this.phaseList = null;
 			this.workTypeList = null;
-			runOnCreate();
+			if(SeveraCommsUtils.checkIfConnected(this) == false) {
+				showDialog(NOT_CONNECTED_DIALOG_ID);
+			} else {
+				runOnCreate();
+			}
 			break;
 		}
 		
@@ -350,6 +354,10 @@ public class SevedroidProjectActivity extends Activity implements OnItemSelected
 					showDialog(DIALOG_ID_MISSING_CASEGUID);
 					return;
 				}
+				if(SeveraCommsUtils.checkIfConnected(this) == false) {
+					showDialog(NOT_CONNECTED_DIALOG_ID);
+					return;
+				}
 				phasesProgress.setVisibility(View.VISIBLE);
 				new LoadPhasesXMLTask(this).execute(caseGuid);
 			}
@@ -366,6 +374,10 @@ public class SevedroidProjectActivity extends Activity implements OnItemSelected
 				Log.d(TAG,"Setting currentPhaseGUID:"+this.currentPhaseGUID);
 				if(phaseGuid == null || phaseGuid.isEmpty()) {
 					showDialog(DIALOG_ID_MISSING_PHASE_GUID);
+					return;
+				}
+				if(SeveraCommsUtils.checkIfConnected(this) == false) {
+					showDialog(NOT_CONNECTED_DIALOG_ID);
 					return;
 				}
 				new LoadWorkTypesXMLTask(this).execute(phaseGuid);
@@ -475,6 +487,10 @@ public class SevedroidProjectActivity extends Activity implements OnItemSelected
 				break;
 			case R.id.button_claim_overtime:
 			case R.id.button_claim:
+				if(SeveraCommsUtils.checkIfConnected(this) == false) {
+					showDialog(NOT_CONNECTED_DIALOG_ID);
+					return;
+				}
 				Log.d(TAG,"Started to claim...");
 				//TODO:Critical: Should check that user does not try to claim to inactive cases/phases/work types!
 				String description = ((EditText)findViewById(R.id.explanation_text)).getText().toString();

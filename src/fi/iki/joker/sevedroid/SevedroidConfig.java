@@ -3,6 +3,9 @@ package fi.iki.joker.sevedroid;
 import java.util.List;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.InputType;
@@ -20,6 +23,7 @@ import fi.iki.joker.sevedroid.S3UserContainer.S3UserItem;
 public class SevedroidConfig extends Activity implements OnCheckedChangeListener, OnClickListener {
 
 	private static final String TAG = "Sevedroid";
+	private static final int NOT_CONNECTED_DIALOG_ID = 1;
 	private SevedroidContentStore mContentStore = null;
 	
 	@Override
@@ -53,6 +57,10 @@ public class SevedroidConfig extends Activity implements OnCheckedChangeListener
 	@Override
 	public void onClick(View v) {
 		if (v.getId() == R.id.apikey_submit_button) {
+			if(SeveraCommsUtils.checkIfConnected(this) == false) {
+				showDialog(NOT_CONNECTED_DIALOG_ID);
+				return;
+			}
 			EditText fName = (EditText)findViewById(R.id.fname_edittext);
 			EditText lName = (EditText)findViewById(R.id.lname_edittext);
 			if((fName.getText() == null) || (fName.getText().toString().equals(""))) {
@@ -89,6 +97,30 @@ public class SevedroidConfig extends Activity implements OnCheckedChangeListener
 		}
 	}
 	
+	
+	
+	@Override
+	protected Dialog onCreateDialog(int id) {
+		String alertMessage = null;
+		switch (id) {
+		case NOT_CONNECTED_DIALOG_ID :
+			alertMessage = "Configuring Sevedroid requires a working network connection. Please ensure yours is working.";
+			break;
+		}
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setMessage(alertMessage)
+		.setCancelable(false)
+		.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int id) {
+				return;
+			}
+		});
+		AlertDialog alert = builder.create();
+		return alert;	
+	}
+
+
+
 	/**
 	 * Async task which takes, as it's input, the user's first and last name and 
 	 * returns S3UserItem object based on a API query.

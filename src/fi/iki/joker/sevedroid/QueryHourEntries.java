@@ -50,6 +50,7 @@ public class QueryHourEntries extends Activity implements OnClickListener,
 	private static final int NO_PROJECTS_DIALOG_ID = 001;
 	private static final int STARTED_HOURS_QUERY_DIALOG_ID = 002;
 	private static final int NO_HOURS_TO_SHOW_DIALOG = 003;
+	private static final int NOT_CONNECTED_DIALOG_ID = 004;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -92,6 +93,7 @@ public class QueryHourEntries extends Activity implements OnClickListener,
 
 	@Override
 	protected Dialog onCreateDialog(int id) {
+		//TODO:refactor method, remove repetition
 		if(id == NO_PROJECTS_DIALOG_ID) {
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
 			builder.setMessage("There are no projects available")
@@ -129,6 +131,17 @@ public class QueryHourEntries extends Activity implements OnClickListener,
 			       });
 			AlertDialog alert = builder.create();
 			return alert;	
+		} else if(id == NOT_CONNECTED_DIALOG_ID) {
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setMessage("Querying hour entries requires a working network connection. Please get connected.")
+			       .setCancelable(false)
+			       .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+			           public void onClick(DialogInterface dialog, int id) {
+			                QueryHourEntries.this.finish();
+			           }
+			       });
+			AlertDialog alert = builder.create();
+			return alert;
 		}
 		return null;
 	}
@@ -150,6 +163,10 @@ public class QueryHourEntries extends Activity implements OnClickListener,
 	public void onClick(View buttonView) {
 		
 		Log.d(TAG, "onClick on the QueryHourentries.");
+		if(SeveraCommsUtils.checkIfConnected(this) == false) {
+			showDialog(NOT_CONNECTED_DIALOG_ID);
+			return;
+		}
 		//get parameters: startDate, endDate, userGuid
 		Calendar startDateCal = Calendar.getInstance();
 		startDateCal.set(startDatePicker.getYear(), startDatePicker.getMonth(), startDatePicker.getDayOfMonth());
