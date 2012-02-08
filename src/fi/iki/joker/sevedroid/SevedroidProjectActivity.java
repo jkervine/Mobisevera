@@ -95,7 +95,9 @@ public class SevedroidProjectActivity extends Activity implements OnItemSelected
 	protected static final String WORKTYPEITEMLIST_PARCEL_ID = "workTypeParcelID";
 	
 	protected String currentWorkTypeGUID = null;
+	protected static final String CURRENTWORKTYPEGUID_PARCEL_ID = "currentWorkTypeGuidParcelID";
 	protected String currentPhaseGUID = null;
+	protected static final String CURRENTPHASEGUID_PARCEL_ID = "currentPhaseGuidParcelID";
 	
 	ProgressBar projectsProgress = null;
 	ProgressBar phasesProgress = null;
@@ -139,6 +141,8 @@ public class SevedroidProjectActivity extends Activity implements OnItemSelected
         	projectList = savedInstanceState.getParcelableArrayList(CASEITEMLIST_PARCEL_ID);
         	phaseList = savedInstanceState.getParcelableArrayList(PHASEITEMLIST_PARCEL_ID);
         	workTypeList = savedInstanceState.getParcelableArrayList(WORKTYPEITEMLIST_PARCEL_ID);
+        	currentPhaseGUID = savedInstanceState.getString(CURRENTPHASEGUID_PARCEL_ID);
+        	currentWorkTypeGUID = savedInstanceState.getString(CURRENTWORKTYPEGUID_PARCEL_ID);
         	stateRestored = true;
         }
         if(SeveraCommsUtils.checkIfConnected(this) == false) {
@@ -167,6 +171,8 @@ public class SevedroidProjectActivity extends Activity implements OnItemSelected
 		outState.putParcelableArrayList(PHASEITEMLIST_PARCEL_ID, phaseList);
 		outState.putParcelableArrayList(WORKTYPEITEMLIST_PARCEL_ID, workTypeList);
 		outState.putBoolean(FULLY_CREATED_BOOL_KEY,fullyCreated);
+		outState.putString(CURRENTWORKTYPEGUID_PARCEL_ID,currentWorkTypeGUID);
+		outState.putString(CURRENTPHASEGUID_PARCEL_ID, currentPhaseGUID);
     	super.onSaveInstanceState(outState);
 	}
 
@@ -470,6 +476,7 @@ public class SevedroidProjectActivity extends Activity implements OnItemSelected
 			case R.id.button_claim_overtime:
 			case R.id.button_claim:
 				Log.d(TAG,"Started to claim...");
+				//TODO:Critical: Should check that user does not try to claim to inactive cases/phases/work types!
 				String description = ((EditText)findViewById(R.id.explanation_text)).getText().toString();
 				if(description == null || description.isEmpty()) {
 					showDialog(DIALOG_ID_MISSING_DESCRIPTION);

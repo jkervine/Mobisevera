@@ -113,7 +113,7 @@ public class SeveraCommsUtils {
 	 */
 	
 	private S3Response requestWithMessage(Activity parent,String soapEnvelope, String soapAction) {
-		
+		//TODO: (CRITICAL!) Should check for device connectivity before doing anything here. Now crashes the app! (nameres.exctp)
 		SevedroidContentStore scs = new SevedroidContentStore(parent);
 		String soapMessage = null;
 		S3Response res = new S3Response();
