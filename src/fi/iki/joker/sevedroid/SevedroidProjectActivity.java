@@ -66,6 +66,7 @@ public class SevedroidProjectActivity extends Activity implements OnItemSelected
 	private static final int DIALOG_ID_BAD_USER_GUID = 6;
 	private static final int DIALOG_ID_BAD_HOURS_QUANTITY = 7;
 	private static final int DIALOG_ID_BAD_EVENT_DATE = 8;
+	private static final int DIALOG_ID_FAILED_HOURS_PUBLISHING = 9;
 
 	
 	private boolean stateRestored = false;
@@ -98,6 +99,7 @@ public class SevedroidProjectActivity extends Activity implements OnItemSelected
 	protected static final String CURRENTWORKTYPEGUID_PARCEL_ID = "currentWorkTypeGuidParcelID";
 	protected String currentPhaseGUID = null;
 	protected static final String CURRENTPHASEGUID_PARCEL_ID = "currentPhaseGuidParcelID";
+	protected String currentCaseGUID = null;
 	
 	ProgressBar projectsProgress = null;
 	ProgressBar phasesProgress = null;
@@ -573,7 +575,7 @@ public class SevedroidProjectActivity extends Activity implements OnItemSelected
 		if(hourEntryStatus) {
 			Toast.makeText(this, "Your work hours have been saved!", Toast.LENGTH_SHORT).show();	
 		} else {
-			Toast.makeText(this, "Failed to save your work hours! Please try again later!", Toast.LENGTH_LONG).show();
+			showDialog(DIALOG_ID_FAILED_HOURS_PUBLISHING);
 		}
 		
 	}
@@ -627,6 +629,9 @@ public class SevedroidProjectActivity extends Activity implements OnItemSelected
 				break;
 			case DIALOG_ID_BAD_EVENT_DATE:
 				alertMessage = "The date for this claim is empty or missing.";
+				break;
+			case DIALOG_ID_FAILED_HOURS_PUBLISHING:
+				alertMessage = "Failed to save your hours claim. Check that the task is not locked and work type is active.";
 				break;
 		}
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);

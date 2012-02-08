@@ -26,6 +26,8 @@ public class SevedroidConfig extends Activity implements OnCheckedChangeListener
 	private static final int NOT_CONNECTED_DIALOG_ID = 1;
 	private SevedroidContentStore mContentStore = null;
 	
+	//TODO: new feature: should offer a checkbox for the used to enable/disable the loading of inactive work items
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
