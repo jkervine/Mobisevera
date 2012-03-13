@@ -1,8 +1,8 @@
-package fi.iki.joker.sevedroid;
+package com.digitalfingertip.mobisevera;
 
 import java.text.SimpleDateFormat;
 
-public class SevedroidConstants {
+public class MobiseveraConstants {
 	
 	protected static final String APP_VERSION = "0.5beta";
 	protected static final String HTTPCLIENT_USERAGENT = "Sevedroid Android Application v."+APP_VERSION;

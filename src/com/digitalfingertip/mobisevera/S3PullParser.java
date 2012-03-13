@@ -1,4 +1,4 @@
-package fi.iki.joker.sevedroid;
+package com.digitalfingertip.mobisevera;
 
 import java.io.IOException;
 import java.io.StringReader;

@@ -1,4 +1,4 @@
-package fi.iki.joker.sevedroid;
+package com.digitalfingertip.mobisevera;
 
 /**
  * This is an utility class to communicate with the severa API
@@ -7,7 +7,7 @@ package fi.iki.joker.sevedroid;
  * (like ksoap for android or something).
  * 
  * To manage the size of this class, all of the constants (the soap messages) are in the
- * SevedroidConstants class.
+ * MobiseveraConstants class.
  * 
  * @author juha
  *
@@ -33,7 +33,7 @@ import android.net.NetworkInfo;
 import android.net.http.AndroidHttpClient;
 import android.util.Log;
 
-public class SeveraCommsUtils {
+public class MobiseveraCommsUtils {
 
 	private static final String TAG = "Sevedroid";
 	private String apiKey = null;
@@ -113,11 +113,11 @@ public class SeveraCommsUtils {
 	 */
 	
 	private S3Response requestWithMessage(Activity parent,String soapEnvelope, String soapAction) {
-		SevedroidContentStore scs = new SevedroidContentStore(parent);
+		MobiseveraContentStore scs = new MobiseveraContentStore(parent);
 		String soapMessage = null;
 		S3Response res = new S3Response();
 		apiKey = scs.fetchApiKey();
-		soapMessage = soapEnvelope.replace(SevedroidConstants.API_KEY_SUBSTR, apiKey);
+		soapMessage = soapEnvelope.replace(MobiseveraConstants.API_KEY_SUBSTR, apiKey);
 		Log.d(TAG, "Sending the following message: "+soapMessage);
 		if(apiKey == null) {
 			Log.d(TAG,"API key is null... thus returning null");
@@ -127,10 +127,10 @@ public class SeveraCommsUtils {
 			//TODO: We need some kind of check here whether the device is connected to the internet or not...
 			HttpURLConnection urlConnection = null;
 			try {
-				url = new URL(SevedroidConstants.S3_API_URL);
+				url = new URL(MobiseveraConstants.S3_API_URL);
 			} catch (MalformedURLException e) {
 				Log.e(TAG, "URL to Severa 3 web service is malformed.");
-				throw new IllegalStateException ("Cannot form URLConnection from url:"+SevedroidConstants.S3_API_URL);
+				throw new IllegalStateException ("Cannot form URLConnection from url:"+MobiseveraConstants.S3_API_URL);
 			}
 			byte[] soapBytes = soapMessage.getBytes();
 			Log.d(TAG,"Posting soapBytes:"+soapBytes.toString());
@@ -197,17 +197,17 @@ public class SeveraCommsUtils {
 	
 	protected String getUserByName(Activity parent, String fName, String lName) {
 		S3Response res = null;
-		String soapBody = SevedroidConstants.SOAP_AUTHN_ENVELOPE.replace(
-				SevedroidConstants.SOAP_BODY_SUBSTR, SevedroidConstants.GET_USER_BY_NAME_BODY);
-		String soapMessage = soapBody.replace(SevedroidConstants.USER_FIRST_NAME_HERE,fName);
-		soapMessage = soapMessage.replace(SevedroidConstants.USER_LAST_NAME_HERE,lName);	
-		res = requestWithMessage(parent, soapMessage, SevedroidConstants.SOAP_ACTION_GET_USER_BY_NAME);
+		String soapBody = MobiseveraConstants.SOAP_AUTHN_ENVELOPE.replace(
+				MobiseveraConstants.SOAP_BODY_SUBSTR, MobiseveraConstants.GET_USER_BY_NAME_BODY);
+		String soapMessage = soapBody.replace(MobiseveraConstants.USER_FIRST_NAME_HERE,fName);
+		soapMessage = soapMessage.replace(MobiseveraConstants.USER_LAST_NAME_HERE,lName);	
+		res = requestWithMessage(parent, soapMessage, MobiseveraConstants.SOAP_ACTION_GET_USER_BY_NAME);
 		if (res == null) {
 			Log.d(TAG, "Response was null while testing api connection.");
 			return null;
 		} else {
 			Log.d(TAG, "While testing API connection, response was:"+res);
-			if(res.responseCode == SevedroidConstants.CODE_INTERNAL_SERVER_ERROR && (res.responseXML == null)) {
+			if(res.responseCode == MobiseveraConstants.CODE_INTERNAL_SERVER_ERROR && (res.responseXML == null)) {
 				return null;
 			} else {
 				return res.responseXML;
@@ -224,16 +224,16 @@ public class SeveraCommsUtils {
 	
 	protected String getAllCasesXml(Activity parent) {
 		S3Response res = null;
-		res = requestWithMessage(parent, SevedroidConstants.SOAP_AUTHN_ENVELOPE.replace(
-					SevedroidConstants.SOAP_BODY_SUBSTR, SevedroidConstants.GET_ALL_CASES_BODY),
-					SevedroidConstants.SOAP_ACTION_GET_ALL_CASES);
+		res = requestWithMessage(parent, MobiseveraConstants.SOAP_AUTHN_ENVELOPE.replace(
+					MobiseveraConstants.SOAP_BODY_SUBSTR, MobiseveraConstants.GET_ALL_CASES_BODY),
+					MobiseveraConstants.SOAP_ACTION_GET_ALL_CASES);
 		if (res == null) {
 			Log.d(TAG, "Response was null while getting all cases.");
 			return null;
 			
 		} else {
 			Log.d(TAG, "While getting all cases xml, response valueOf was:"+String.valueOf(res.responseXML));
-			if(res.responseCode == SevedroidConstants.CODE_INTERNAL_SERVER_ERROR && (res.responseXML == null)) {
+			if(res.responseCode == MobiseveraConstants.CODE_INTERNAL_SERVER_ERROR && (res.responseXML == null)) {
 				return null;
 			} else {
 				return res.responseXML;
@@ -250,17 +250,17 @@ public class SeveraCommsUtils {
 	
 	protected String getCaseXMLByGUID(Activity parent, String caseGuid) {
 		S3Response res = null;
-		String soapMessage = SevedroidConstants.SOAP_AUTHN_ENVELOPE.replace(
-				SevedroidConstants.SOAP_BODY_SUBSTR, SevedroidConstants.GET_CASE_BY_GUID_BODY);
-		soapMessage = soapMessage.replace(SevedroidConstants.CASE_GUID_SUBSTR, caseGuid);
+		String soapMessage = MobiseveraConstants.SOAP_AUTHN_ENVELOPE.replace(
+				MobiseveraConstants.SOAP_BODY_SUBSTR, MobiseveraConstants.GET_CASE_BY_GUID_BODY);
+		soapMessage = soapMessage.replace(MobiseveraConstants.CASE_GUID_SUBSTR, caseGuid);
 		res = requestWithMessage(parent, soapMessage,
-					SevedroidConstants.SOAP_ACTION_GET_CASE_BY_GUID);
+					MobiseveraConstants.SOAP_ACTION_GET_CASE_BY_GUID);
 		if (res == null) {
 			Log.d(TAG, "Response was null while getting case by case GUID.");
 			return null;
 		} else {
 			Log.d(TAG, "While getting case by case guid xml, response valueOf was:"+String.valueOf(res.responseXML));
-			if(res.responseCode == SevedroidConstants.CODE_INTERNAL_SERVER_ERROR && (res.responseXML == null)) {
+			if(res.responseCode == MobiseveraConstants.CODE_INTERNAL_SERVER_ERROR && (res.responseXML == null)) {
 				return null;
 			} else {
 				return res.responseXML;
@@ -275,16 +275,16 @@ public class SeveraCommsUtils {
 	
 	protected String getPhasesXMLByCaseGUID(Activity parent, String caseGUID) {
 		S3Response res = null;
-		String soapBody = SevedroidConstants.SOAP_AUTHN_ENVELOPE.replace(
-				SevedroidConstants.SOAP_BODY_SUBSTR, SevedroidConstants.GET_PHASES_BY_CASE_GUID_BODY);
-		String soapMessage = soapBody.replace(SevedroidConstants.CASE_GUID_SUBSTR,caseGUID);
-		res = requestWithMessage(parent, soapMessage, SevedroidConstants.SOAP_ACTION_GET_PHASES_BY_CASE_GUID);
+		String soapBody = MobiseveraConstants.SOAP_AUTHN_ENVELOPE.replace(
+				MobiseveraConstants.SOAP_BODY_SUBSTR, MobiseveraConstants.GET_PHASES_BY_CASE_GUID_BODY);
+		String soapMessage = soapBody.replace(MobiseveraConstants.CASE_GUID_SUBSTR,caseGUID);
+		res = requestWithMessage(parent, soapMessage, MobiseveraConstants.SOAP_ACTION_GET_PHASES_BY_CASE_GUID);
 		if (res == null) {
 			Log.d(TAG, "Response was null while getting phases by case guid.");
 			return null;
 		} else {
 			Log.d(TAG, "While getting phases by case guid xml, response valueOf was:"+String.valueOf(res.responseXML));
-			if(res.responseCode == SevedroidConstants.CODE_INTERNAL_SERVER_ERROR && (res.responseXML == null)) {
+			if(res.responseCode == MobiseveraConstants.CODE_INTERNAL_SERVER_ERROR && (res.responseXML == null)) {
 				return null;
 			} else {
 				return res.responseXML;
@@ -299,16 +299,16 @@ public class SeveraCommsUtils {
 	
 	protected String getWorkTypesXMLByPhaseGUID(Activity parent, String phaseGUID) {
 		S3Response res = null;
-		String soapBody = SevedroidConstants.SOAP_AUTHN_ENVELOPE.replace(
-				SevedroidConstants.SOAP_BODY_SUBSTR, SevedroidConstants.GET_WORKTYPES_BY_PHASE_BODY);
-		String soapMessage = soapBody.replace(SevedroidConstants.WORKTYPES_PHASE_GUID_HERE,phaseGUID);
-		res = requestWithMessage(parent, soapMessage, SevedroidConstants.SOAP_ACTION_GET_WORKTYPES_BY_PHASE_GUID);
+		String soapBody = MobiseveraConstants.SOAP_AUTHN_ENVELOPE.replace(
+				MobiseveraConstants.SOAP_BODY_SUBSTR, MobiseveraConstants.GET_WORKTYPES_BY_PHASE_BODY);
+		String soapMessage = soapBody.replace(MobiseveraConstants.WORKTYPES_PHASE_GUID_HERE,phaseGUID);
+		res = requestWithMessage(parent, soapMessage, MobiseveraConstants.SOAP_ACTION_GET_WORKTYPES_BY_PHASE_GUID);
 		if (res == null) {
 			Log.d(TAG, "Response was null while getting work types by phase guid.");
 			return null;
 		} else {
 			Log.d(TAG, "While getting worktypes by phase guid xml, response valueOf was:"+String.valueOf(res.responseXML));
-			if(res.responseCode == SevedroidConstants.CODE_INTERNAL_SERVER_ERROR && (res.responseXML == null)) {
+			if(res.responseCode == MobiseveraConstants.CODE_INTERNAL_SERVER_ERROR && (res.responseXML == null)) {
 				return null;
 			} else {
 				return res.responseXML;
@@ -321,22 +321,22 @@ public class SeveraCommsUtils {
 			String userGuid, String workTypeGuid) { 	
 		Log.d(TAG,"Publish hour entry args: "+description+":"+eventDate+":"+phaseGuid+":"+quantity+":"+userGuid+":"+workTypeGuid);
 		S3Response res = null;
-		String soapBody = SevedroidConstants.SOAP_AUTHN_ENVELOPE.replace(
-				SevedroidConstants.SOAP_BODY_SUBSTR, SevedroidConstants.HOUR_ENTRY_BODY);
+		String soapBody = MobiseveraConstants.SOAP_AUTHN_ENVELOPE.replace(
+				MobiseveraConstants.SOAP_BODY_SUBSTR, MobiseveraConstants.HOUR_ENTRY_BODY);
 		//TODO:Test what happens here is some of the dropdowns are not selected (but have their default value)
-		String soapMessage = soapBody.replace(SevedroidConstants.HOUR_ENTRY_DESC_SUBSTR, description);
-		soapMessage = soapMessage.replace(SevedroidConstants.HOUR_ENTRY_EVENT_DATE_SUBSTR, eventDate);
-		soapMessage = soapMessage.replace(SevedroidConstants.HOUR_ENTRY_PHASE_GUID_SUBSTR, phaseGuid);
-		soapMessage = soapMessage.replace(SevedroidConstants.HOUR_ENTRY_QUANTITY_SUBSTR, quantity);
-		soapMessage = soapMessage.replace(SevedroidConstants.HOUR_ENTRY_USER_GUID_SUBSTR, userGuid);
-		soapMessage = soapMessage.replace(SevedroidConstants.HOUR_ENTRY_WORKTYPE_GUID_SUBSTR, workTypeGuid);
-		res = requestWithMessage(parent, soapMessage, SevedroidConstants.SOAP_ACTION_PUBLISH_HOURENTRY);
+		String soapMessage = soapBody.replace(MobiseveraConstants.HOUR_ENTRY_DESC_SUBSTR, description);
+		soapMessage = soapMessage.replace(MobiseveraConstants.HOUR_ENTRY_EVENT_DATE_SUBSTR, eventDate);
+		soapMessage = soapMessage.replace(MobiseveraConstants.HOUR_ENTRY_PHASE_GUID_SUBSTR, phaseGuid);
+		soapMessage = soapMessage.replace(MobiseveraConstants.HOUR_ENTRY_QUANTITY_SUBSTR, quantity);
+		soapMessage = soapMessage.replace(MobiseveraConstants.HOUR_ENTRY_USER_GUID_SUBSTR, userGuid);
+		soapMessage = soapMessage.replace(MobiseveraConstants.HOUR_ENTRY_WORKTYPE_GUID_SUBSTR, workTypeGuid);
+		res = requestWithMessage(parent, soapMessage, MobiseveraConstants.SOAP_ACTION_PUBLISH_HOURENTRY);
 		if (res == null) {
 			Log.d(TAG, "Response was null while getting work types by phase guid.");
 			return false;
 		} else {
 			Log.d(TAG, "While getting worktypes by phase guid xml, response valueOf was:"+String.valueOf(res.responseXML));
-			if(res.responseCode == SevedroidConstants.CODE_INTERNAL_SERVER_ERROR && (res.responseXML == null)) {
+			if(res.responseCode == MobiseveraConstants.CODE_INTERNAL_SERVER_ERROR && (res.responseXML == null)) {
 				return false;
 			} else {
 				return true;
@@ -347,18 +347,18 @@ public class SeveraCommsUtils {
 	
 	public String getHourEntriesByDateAndUserGUID(Activity parent, String startDate, String endDate, String userGuid) {
 		S3Response res = null;
-		String soapBody = SevedroidConstants.SOAP_AUTHN_ENVELOPE.replace(
-					SevedroidConstants.SOAP_BODY_SUBSTR, SevedroidConstants.GET_HOUR_ENTRIES_BY_DATE_AND_USER_GUID_BODY);
-		String soapMessage = soapBody.replace(SevedroidConstants.HOUR_ENTRY_USER_GUID_HERE,userGuid);
-		soapMessage = soapMessage.replace(SevedroidConstants.FIRST_HOUR_ENTRY_DATE_HERE, startDate);
-		soapMessage = soapMessage.replace(SevedroidConstants.LAST_HOUR_ENTRY_DATE_HERE, endDate);
-		res = requestWithMessage(parent, soapMessage, SevedroidConstants.SOAP_ACTION_GET_HOURENTRIES_BY_DATE_AND_USER_GUID);
+		String soapBody = MobiseveraConstants.SOAP_AUTHN_ENVELOPE.replace(
+					MobiseveraConstants.SOAP_BODY_SUBSTR, MobiseveraConstants.GET_HOUR_ENTRIES_BY_DATE_AND_USER_GUID_BODY);
+		String soapMessage = soapBody.replace(MobiseveraConstants.HOUR_ENTRY_USER_GUID_HERE,userGuid);
+		soapMessage = soapMessage.replace(MobiseveraConstants.FIRST_HOUR_ENTRY_DATE_HERE, startDate);
+		soapMessage = soapMessage.replace(MobiseveraConstants.LAST_HOUR_ENTRY_DATE_HERE, endDate);
+		res = requestWithMessage(parent, soapMessage, MobiseveraConstants.SOAP_ACTION_GET_HOURENTRIES_BY_DATE_AND_USER_GUID);
 		if (res == null) {
 			Log.d(TAG, "Respoanse was null whic getting hour entries by date, userguid.");
 			return null;
 		} else {
 			Log.d(TAG,"While getting hour entries by date, userguid, response was: "+String.valueOf(res.responseXML));
-			if(res.responseCode == SevedroidConstants.CODE_INTERNAL_SERVER_ERROR && (res.responseXML == null)) {
+			if(res.responseCode == MobiseveraConstants.CODE_INTERNAL_SERVER_ERROR && (res.responseXML == null)) {
 				return null;
 			} else {
 				return res.responseXML;

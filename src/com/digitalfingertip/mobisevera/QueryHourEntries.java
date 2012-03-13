@@ -1,4 +1,4 @@
-package fi.iki.joker.sevedroid;
+package com.digitalfingertip.mobisevera;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -68,14 +68,14 @@ public class QueryHourEntries extends Activity implements OnClickListener,
 		} else {
 			Log.d(TAG,"Extras bundle is not null");
 		}
-		projectList = extrasBundle.getParcelableArrayList(SevedroidProjectActivity.PROJECTLIST_BUNDLE_KEY);
+		projectList = extrasBundle.getParcelableArrayList(MobiseveraProjectActivity.PROJECTLIST_BUNDLE_KEY);
 		if(projectList == null || projectList.isEmpty()) {
 			showDialog(NO_PROJECTS_DIALOG_ID);
 		} else {
 			//Insert first item to the list to indicate that user wishes to see claims for all projects
 			S3CaseItem everyProjectCaseItem = new S3CaseItem();
 			everyProjectCaseItem.setCaseInternalName("[All projects]");
-			everyProjectCaseItem.setCaseGuid(SevedroidConstants.MAGIC_CASE_GUID_FOR_ALL_WILDCARD);
+			everyProjectCaseItem.setCaseGuid(MobiseveraConstants.MAGIC_CASE_GUID_FOR_ALL_WILDCARD);
 			everyProjectCaseItem.setCaseAccountName("");
 			projectList.add(0, everyProjectCaseItem );
 			projectSpinner = (Spinner)findViewById(R.id.queryui_projectnamespinner);
@@ -163,7 +163,7 @@ public class QueryHourEntries extends Activity implements OnClickListener,
 	public void onClick(View buttonView) {
 		
 		Log.d(TAG, "onClick on the QueryHourentries.");
-		if(SeveraCommsUtils.checkIfConnected(this) == false) {
+		if(MobiseveraCommsUtils.checkIfConnected(this) == false) {
 			showDialog(NOT_CONNECTED_DIALOG_ID);
 			return;
 		}
@@ -171,10 +171,10 @@ public class QueryHourEntries extends Activity implements OnClickListener,
 		Calendar startDateCal = Calendar.getInstance();
 		startDateCal.set(startDatePicker.getYear(), startDatePicker.getMonth(), startDatePicker.getDayOfMonth());
 		
-		String startDateStr = SevedroidConstants.S3_DATE_FORMATTER.format(startDateCal.getTime());
+		String startDateStr = MobiseveraConstants.S3_DATE_FORMATTER.format(startDateCal.getTime());
 		Calendar endDateCal = Calendar.getInstance();
 		endDateCal.set(endDatePicker.getYear(), endDatePicker.getMonth(), endDatePicker.getDayOfMonth());
-		String endDateStr = SevedroidConstants.S3_DATE_FORMATTER.format(endDateCal.getTime());
+		String endDateStr = MobiseveraConstants.S3_DATE_FORMATTER.format(endDateCal.getTime());
 		
 		if(startDateStr != null && startDateStr.length() == 10) { //"yyyy-MM-dd".length == 10 
 			Log.d(TAG,"StartDateStr is:"+startDateStr);
@@ -187,7 +187,7 @@ public class QueryHourEntries extends Activity implements OnClickListener,
 			throw new IllegalStateException("endDateString is null or of wrong length! ("+endDateStr+")");
 		}
 			
-		SevedroidContentStore scs = new SevedroidContentStore(this);
+		MobiseveraContentStore scs = new MobiseveraContentStore(this);
 		String userGuid = scs.fetchUserGUID();
 		if(userGuid == null) {
 			throw new IllegalStateException("UserGuid is null - cannot query hours.");
@@ -223,7 +223,7 @@ public class QueryHourEntries extends Activity implements OnClickListener,
 			} else {
 				throw new IllegalArgumentException("Null or wrong amount of arguments for the background thread (loadHours).");
 			}
-			SeveraCommsUtils scu = new SeveraCommsUtils();
+			MobiseveraCommsUtils scu = new MobiseveraCommsUtils();
 			S3HourEntryContainer S3HourEntries = S3HourEntryContainer.getInstance();
 			S3CaseContainer S3CC = S3CaseContainer.getInstance();
 			String startDate = args[0];

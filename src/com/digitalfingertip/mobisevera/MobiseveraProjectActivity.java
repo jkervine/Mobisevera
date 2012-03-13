@@ -1,4 +1,4 @@
-package fi.iki.joker.sevedroid;
+package com.digitalfingertip.mobisevera;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -41,7 +41,7 @@ import android.widget.Toast;
  *
  */
 
-public class SevedroidProjectActivity extends Activity implements OnItemSelectedListener, 
+public class MobiseveraProjectActivity extends Activity implements OnItemSelectedListener, 
 																	OnClickListener {
     
 	/**
@@ -52,7 +52,7 @@ public class SevedroidProjectActivity extends Activity implements OnItemSelected
 	
 	private static final String TAG = "Sevedroid";
 	private static final int optionsMenuId = 1;
-	private SeveraCommsUtils mScu = null;
+	private MobiseveraCommsUtils mScu = null;
 	private static final int requestCode = 1;
 	
 	// IDs for various dialog views
@@ -68,7 +68,7 @@ public class SevedroidProjectActivity extends Activity implements OnItemSelected
 	private static final int DIALOG_ID_BAD_EVENT_DATE = 8;
 	private static final int DIALOG_ID_FAILED_HOURS_PUBLISHING = 9;
 
-	
+	// This boolean indicates that most activity has just been restored
 	private boolean stateRestored = false;
 	private boolean fullyCreated = false;
 	
@@ -147,18 +147,18 @@ public class SevedroidProjectActivity extends Activity implements OnItemSelected
         	currentWorkTypeGUID = savedInstanceState.getString(CURRENTWORKTYPEGUID_PARCEL_ID);
         	stateRestored = true;
         }
-        if(SeveraCommsUtils.checkIfConnected(this) == false) {
+        if(MobiseveraCommsUtils.checkIfConnected(this) == false) {
 			showDialog(NOT_CONNECTED_DIALOG_ID);
 			return;
 		}
         setContentView(R.layout.main);
         // test if the user has set the api key, if yes, then follow on to load up the projects
         // if not, then auto start the config activity
-        SevedroidContentStore contentStore = new SevedroidContentStore(this);
+        MobiseveraContentStore contentStore = new MobiseveraContentStore(this);
         if(contentStore.fetchApiKey() == null) {
         	Toast.makeText(this,"Please input your API key to use this app!",Toast.LENGTH_LONG).show();
 			Intent intent = new Intent();
-			intent.setClass(this, SevedroidConfig.class);
+			intent.setClass(this, MobiseveraConfig.class);
 			this.startActivityForResult(intent, requestCode);
 			return;
         } else {
@@ -168,6 +168,7 @@ public class SevedroidProjectActivity extends Activity implements OnItemSelected
     
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
+		//TODO:Critical: (*) if instance state is saved during the projects are loading, spinners stay empty!!!
 		Log.d(TAG,"onSaveInstanceState called!");
 		outState.putParcelableArrayList(CASEITEMLIST_PARCEL_ID, projectList);
 		outState.putParcelableArrayList(PHASEITEMLIST_PARCEL_ID, phaseList);
@@ -177,6 +178,8 @@ public class SevedroidProjectActivity extends Activity implements OnItemSelected
 		outState.putString(CURRENTPHASEGUID_PARCEL_ID, currentPhaseGUID);
     	super.onSaveInstanceState(outState);
 	}
+	
+	//TODO:make runOnCreate to onStart() - all this business with stateRestored and fullyCreated is getting confusing
 
 	private void runOnCreate() {
 		//TODO: we should remove the items from spinners which are inactive.
@@ -248,7 +251,7 @@ public class SevedroidProjectActivity extends Activity implements OnItemSelected
     
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if(requestCode == SevedroidProjectActivity.requestCode && resultCode == Activity.RESULT_OK) {
+		if(requestCode == MobiseveraProjectActivity.requestCode && resultCode == Activity.RESULT_OK) {
 			Log.d(TAG,"API KEY input finished with ok result... re-create!");
 			//TODO: Some happy day, change this to Activity.reCreate(), api level 11
 			stateRestored = false;
@@ -278,8 +281,8 @@ public class SevedroidProjectActivity extends Activity implements OnItemSelected
 		switch (item.getItemId()) {
 		case R.id.input_api_key_option:
 			Intent intent = new Intent();
-			intent.setClass(this, SevedroidConfig.class);
-			Log.d(TAG,"SevedroidConfig Activity starting...");
+			intent.setClass(this, MobiseveraConfig.class);
+			Log.d(TAG,"MobiseveraConfig Activity starting...");
 			this.startActivity(intent);
 			break;
 		case R.id.query_claimed_hours:
@@ -295,7 +298,8 @@ public class SevedroidProjectActivity extends Activity implements OnItemSelected
 			this.projectList = null;
 			this.phaseList = null;
 			this.workTypeList = null;
-			if(SeveraCommsUtils.checkIfConnected(this) == false) {
+			this.stateRestored = false;
+			if(MobiseveraCommsUtils.checkIfConnected(this) == false) {
 				showDialog(NOT_CONNECTED_DIALOG_ID);
 			} else {
 				runOnCreate();
@@ -346,6 +350,7 @@ public class SevedroidProjectActivity extends Activity implements OnItemSelected
 		Log.d(TAG,"OnItemSelected called: adapterViewID:"+adapterView.getId()+"view ID:"+view.getId()+", pos:"+position+" id:"+id);
 		if(adapterView.getId() == R.id.projectnamespinner) {
 			/* user selected new case, look up case phases */
+			//TODO: Critical! If (*) happens, then stateRestored remanins true and refresh and selection don't update spinners below
 			if(stateRestored) {
 				Log.d(TAG,"Because state is just restored, ignoring this onItemSelected event as a side effect of that...");
 				return;
@@ -356,7 +361,7 @@ public class SevedroidProjectActivity extends Activity implements OnItemSelected
 					showDialog(DIALOG_ID_MISSING_CASEGUID);
 					return;
 				}
-				if(SeveraCommsUtils.checkIfConnected(this) == false) {
+				if(MobiseveraCommsUtils.checkIfConnected(this) == false) {
 					showDialog(NOT_CONNECTED_DIALOG_ID);
 					return;
 				}
@@ -378,7 +383,7 @@ public class SevedroidProjectActivity extends Activity implements OnItemSelected
 					showDialog(DIALOG_ID_MISSING_PHASE_GUID);
 					return;
 				}
-				if(SeveraCommsUtils.checkIfConnected(this) == false) {
+				if(MobiseveraCommsUtils.checkIfConnected(this) == false) {
 					showDialog(NOT_CONNECTED_DIALOG_ID);
 					return;
 				}
@@ -489,7 +494,7 @@ public class SevedroidProjectActivity extends Activity implements OnItemSelected
 				break;
 			case R.id.button_claim_overtime:
 			case R.id.button_claim:
-				if(SeveraCommsUtils.checkIfConnected(this) == false) {
+				if(MobiseveraCommsUtils.checkIfConnected(this) == false) {
 					showDialog(NOT_CONNECTED_DIALOG_ID);
 					return;
 				}
@@ -503,7 +508,7 @@ public class SevedroidProjectActivity extends Activity implements OnItemSelected
 				if(claimDate == null) {
 						claimDate = Calendar.getInstance();
 				}
-				String eventDate = SevedroidConstants.S3_DATE_FORMATTER.format(claimDate.getTime());
+				String eventDate = MobiseveraConstants.S3_DATE_FORMATTER.format(claimDate.getTime());
 				if(eventDate == null || eventDate.isEmpty()) {
 					showDialog(DIALOG_ID_BAD_EVENT_DATE);
 					return;
@@ -520,7 +525,7 @@ public class SevedroidProjectActivity extends Activity implements OnItemSelected
 					showDialog(DIALOG_ID_BAD_HOURS_QUANTITY);
 					return;
 				}
-				SevedroidContentStore scs = new SevedroidContentStore(this);
+				MobiseveraContentStore scs = new MobiseveraContentStore(this);
 				String userGuid = scs.fetchUserGUID();
 				if(userGuid == null || userGuid.isEmpty()) {
 					showDialog(DIALOG_ID_BAD_USER_GUID);
@@ -597,7 +602,7 @@ public class SevedroidProjectActivity extends Activity implements OnItemSelected
 			       .setCancelable(false)
 			       .setPositiveButton("OK", new DialogInterface.OnClickListener() {
 			           public void onClick(DialogInterface dialog, int id) {
-			                SevedroidProjectActivity.this.finish();
+			                MobiseveraProjectActivity.this.finish();
 			           }
 			       });
 			AlertDialog alert = builder.create();
@@ -608,11 +613,11 @@ public class SevedroidProjectActivity extends Activity implements OnItemSelected
 		switch(id) {
 			case DIALOG_ID_MISSING_CASEGUID:
 				alertMessage = "Missing GUID For Case. Most likely this is a bug. Please report bugs to:"+
-						SevedroidConstants.DF_SUPPORT_EMAIL;
+						MobiseveraConstants.DF_SUPPORT_EMAIL;
 				break;
 			case DIALOG_ID_MISSING_PHASE_GUID: 
 				alertMessage = "Missing GUID for Phase. Most likely this is a bug. Please report bugs to:"+
-						SevedroidConstants.DF_SUPPORT_EMAIL;
+						MobiseveraConstants.DF_SUPPORT_EMAIL;
 				break;
 			case DIALOG_ID_MISSING_DESCRIPTION:
 				alertMessage = "You hours claim is missing description.";
@@ -622,7 +627,7 @@ public class SevedroidProjectActivity extends Activity implements OnItemSelected
 				break;
 			case DIALOG_ID_BAD_USER_GUID:
 				alertMessage = "User's unique ID is missing. Most likely this is a bug. Please report bugs to:"+
-						SevedroidConstants.DF_SUPPORT_EMAIL;
+						MobiseveraConstants.DF_SUPPORT_EMAIL;
 				break;
 			case DIALOG_ID_BAD_HOURS_QUANTITY:
 				alertMessage = "The hours quantity is not proper.";
@@ -655,13 +660,13 @@ public class SevedroidProjectActivity extends Activity implements OnItemSelected
 	
 	private class LoadCasesXMLTask extends AsyncTask<Void, Integer, Boolean> {
 		
-		private SevedroidProjectActivity mParent;
+		private MobiseveraProjectActivity mParent;
 		public static final int STATUS_INIT = 1;
 		public static final int STATUS_TRANSFERRING = 2;
 		public static final int STATUS_PARSING = 3;
 		public static final int STATUS_RETURNING = 4;
 		
-		public LoadCasesXMLTask(SevedroidProjectActivity parent) {
+		public LoadCasesXMLTask(MobiseveraProjectActivity parent) {
 			mParent = parent;
 		}
 		
@@ -670,7 +675,7 @@ public class SevedroidProjectActivity extends Activity implements OnItemSelected
 			Log.d(TAG,"Started doInBackground for LoadCasesXMLTask!");
 			mParent.projectNameSpinner.setClickable(false);
 			publishProgress(STATUS_INIT);
-			SeveraCommsUtils scu = new SeveraCommsUtils();
+			MobiseveraCommsUtils scu = new MobiseveraCommsUtils();
 			S3CaseContainer S3Cases = S3CaseContainer.getInstance();
 			//The next invocation is the one that takes time
 	        publishProgress(STATUS_TRANSFERRING);
@@ -706,13 +711,13 @@ public class SevedroidProjectActivity extends Activity implements OnItemSelected
 	
 	private class LoadPhasesXMLTask extends AsyncTask<String, Integer, Boolean> {
 		
-		private SevedroidProjectActivity mParent;
+		private MobiseveraProjectActivity mParent;
 		public static final int STATUS_INIT = 1;
 		public static final int STATUS_TRANSFERRING = 2;
 		public static final int STATUS_PARSING = 3;
 		public static final int STATUS_RETURNING = 4;
 		
-		public LoadPhasesXMLTask(SevedroidProjectActivity parent) {
+		public LoadPhasesXMLTask(MobiseveraProjectActivity parent) {
 			mParent = parent;
 		}
 		
@@ -724,7 +729,7 @@ public class SevedroidProjectActivity extends Activity implements OnItemSelected
 			} 
 			mParent.projectPhaseSpinner.setClickable(false);
 			publishProgress(STATUS_INIT);
-			SeveraCommsUtils scu = new SeveraCommsUtils();
+			MobiseveraCommsUtils scu = new MobiseveraCommsUtils();
 			S3PhaseContainer S3Phases = S3PhaseContainer.getInstance();
 			//The next invocation is the one that takes time
 	        publishProgress(STATUS_TRANSFERRING);
@@ -765,13 +770,13 @@ public class SevedroidProjectActivity extends Activity implements OnItemSelected
 	
 	private class LoadWorkTypesXMLTask extends AsyncTask<String, Integer, Boolean> {
 		
-		private SevedroidProjectActivity mParent;
+		private MobiseveraProjectActivity mParent;
 		public static final int STATUS_INIT = 1;
 		public static final int STATUS_TRANSFERRING = 2;
 		public static final int STATUS_PARSING = 3;
 		public static final int STATUS_RETURNING = 4;
 		
-		public LoadWorkTypesXMLTask(SevedroidProjectActivity parent) {
+		public LoadWorkTypesXMLTask(MobiseveraProjectActivity parent) {
 			mParent = parent;
 		}
 		
@@ -783,7 +788,7 @@ public class SevedroidProjectActivity extends Activity implements OnItemSelected
 			} 
 			mParent.workTypeSpinner.setClickable(false);
 			publishProgress(STATUS_INIT);
-			SeveraCommsUtils scu = new SeveraCommsUtils();
+			MobiseveraCommsUtils scu = new MobiseveraCommsUtils();
 			S3WorkTypeContainer S3WorkTypes = S3WorkTypeContainer.getInstance();
 			//The next invocation is the one that takes time
 	        publishProgress(STATUS_TRANSFERRING);
@@ -819,9 +824,9 @@ public class SevedroidProjectActivity extends Activity implements OnItemSelected
 	
 	private class PublishHourEntryTask extends AsyncTask<String, Integer, Boolean> {
 		
-		SevedroidProjectActivity mParent = null;
+		MobiseveraProjectActivity mParent = null;
 		
-		PublishHourEntryTask(SevedroidProjectActivity activity) {
+		PublishHourEntryTask(MobiseveraProjectActivity activity) {
 			mParent = activity;
 		}
 
@@ -844,7 +849,7 @@ public class SevedroidProjectActivity extends Activity implements OnItemSelected
 			String quantity = params[3];
 			String userGuid = params[4];
 			String workTypeGuid = params[5];
-			SeveraCommsUtils scu = new SeveraCommsUtils();
+			MobiseveraCommsUtils scu = new MobiseveraCommsUtils();
 			boolean res = scu.publishHourEntry(mParent, description, eventDate, phaseGuid, quantity, userGuid, workTypeGuid);
 			return new Boolean(res);
 		}

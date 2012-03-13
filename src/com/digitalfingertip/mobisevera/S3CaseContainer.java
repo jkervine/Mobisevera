@@ -1,4 +1,4 @@
-package fi.iki.joker.sevedroid;
+package com.digitalfingertip.mobisevera;
 
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -22,7 +22,7 @@ import android.util.Log;
 /**
  * This singleton class wraps in itself the functionality to handle Severa 3 case objects, ie.
  * those whih can be used to claim hours to. To use, feed it the SOAP xml message got from the 
- * getAllCasesXml method of the SeveraCommsUtils 
+ * getAllCasesXml method of the MobiseveraCommsUtils 
  * @author juha
  *
  */

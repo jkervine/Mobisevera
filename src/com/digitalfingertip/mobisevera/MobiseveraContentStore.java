@@ -1,4 +1,4 @@
-package fi.iki.joker.sevedroid;
+package com.digitalfingertip.mobisevera;
 
 import android.app.Activity;
 import android.content.ContentValues;
@@ -10,7 +10,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 
-public class SevedroidContentStore {
+public class MobiseveraContentStore {
 	
 	private static final String TAG = "Sevedroid";
 	private static final String KEY_ROW_ID = "_id";
@@ -54,13 +54,13 @@ public class SevedroidContentStore {
 		
 	}
     
-	public SevedroidContentStore(Activity caller) {
+	public MobiseveraContentStore(Activity caller) {
 				
 		DBHelper = new DatabaseHelper(caller);
 		
 	}
 	
-	public SevedroidContentStore open() throws SQLException {
+	public MobiseveraContentStore open() throws SQLException {
 		if(db == null || !db.isOpen()) {
 			db = DBHelper.getWritableDatabase();
 		}

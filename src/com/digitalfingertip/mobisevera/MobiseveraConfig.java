@@ -1,6 +1,8 @@
-package fi.iki.joker.sevedroid;
+package com.digitalfingertip.mobisevera;
 
 import java.util.List;
+
+import com.digitalfingertip.mobisevera.S3UserContainer.S3UserItem;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -18,13 +20,12 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.Toast;
-import fi.iki.joker.sevedroid.S3UserContainer.S3UserItem;
 
-public class SevedroidConfig extends Activity implements OnCheckedChangeListener, OnClickListener {
+public class MobiseveraConfig extends Activity implements OnCheckedChangeListener, OnClickListener {
 
 	private static final String TAG = "Sevedroid";
 	private static final int NOT_CONNECTED_DIALOG_ID = 1;
-	private SevedroidContentStore mContentStore = null;
+	private MobiseveraContentStore mContentStore = null;
 	
 	//TODO: new feature: should offer a checkbox for the used to enable/disable the loading of inactive work items
 	
@@ -32,7 +33,7 @@ public class SevedroidConfig extends Activity implements OnCheckedChangeListener
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.apikeyinput);
-		mContentStore = new SevedroidContentStore(this);
+		mContentStore = new MobiseveraContentStore(this);
 		CheckBox cb = (CheckBox)findViewById(R.id.apikey_show_password);
 		EditText ed = (EditText)findViewById(R.id.apikey_edittext);
 		Button submit = (Button)findViewById(R.id.apikey_submit_button);
@@ -59,7 +60,7 @@ public class SevedroidConfig extends Activity implements OnCheckedChangeListener
 	@Override
 	public void onClick(View v) {
 		if (v.getId() == R.id.apikey_submit_button) {
-			if(SeveraCommsUtils.checkIfConnected(this) == false) {
+			if(MobiseveraCommsUtils.checkIfConnected(this) == false) {
 				showDialog(NOT_CONNECTED_DIALOG_ID);
 				return;
 			}
@@ -87,7 +88,7 @@ public class SevedroidConfig extends Activity implements OnCheckedChangeListener
 	public void notifyOnUserLoadedSuccess(S3UserItem userItem) {
 		Log.d(TAG,"NotifyOnUserLoaded - is successful:"+(userItem != null));
 		if(userItem != null) {
-			SevedroidContentStore scs = new SevedroidContentStore(this);
+			MobiseveraContentStore scs = new MobiseveraContentStore(this);
 		    scs.insertUserFirstName(userItem.getFirstName());
 		    scs.insertUserGUID(userItem.getUserGUID());
 		    scs.insertUserIsActive(userItem.getIsActive());
@@ -141,7 +142,7 @@ public class SevedroidConfig extends Activity implements OnCheckedChangeListener
 		@Override
 		protected S3UserItem doInBackground(String... params) {
 			Log.d(TAG,"Starting doInBackgroud...");
-			SeveraCommsUtils scu = new SeveraCommsUtils();
+			MobiseveraCommsUtils scu = new MobiseveraCommsUtils();
 			Log.d(TAG,"SCU created...");
 			String fName = params[0];
 			String lName = params[1];

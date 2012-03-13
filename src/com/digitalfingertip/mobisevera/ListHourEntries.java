@@ -1,4 +1,4 @@
-package fi.iki.joker.sevedroid;
+package com.digitalfingertip.mobisevera;
 
 import java.util.ArrayList;
 
@@ -50,7 +50,7 @@ public class ListHourEntries extends ListActivity {
 		switch (id) {
 			case DIALOG_ID_INTENT_NULL:
 				builder.setMessage("Error (1) in listing your hours. Sorry. Please report this to:"+
-						SevedroidConstants.DF_SUPPORT_EMAIL+". Thank you.")
+						MobiseveraConstants.DF_SUPPORT_EMAIL+". Thank you.")
 				     .setCancelable(false)
 				     .setPositiveButton("OK", new DialogInterface.OnClickListener() {
 				    	 public void onClick(DialogInterface dialog, int id) {
@@ -60,7 +60,7 @@ public class ListHourEntries extends ListActivity {
 				break;
 			case DIALOG_ID_EXTRAS_BUNDLE_NULL:
 				builder.setMessage("Error (1) in listing your hours. Sorry. Please report this to:"+
-						SevedroidConstants.DF_SUPPORT_EMAIL+". Thank you.")
+						MobiseveraConstants.DF_SUPPORT_EMAIL+". Thank you.")
 				     .setCancelable(false)
 				     .setPositiveButton("OK", new DialogInterface.OnClickListener() {
 				    	 public void onClick(DialogInterface dialog, int id) {
@@ -70,7 +70,7 @@ public class ListHourEntries extends ListActivity {
 				break;
 			case DIALOG_ID_PARCEL_ATTRS_NULL:
 				builder.setMessage("Error (1) in listing your hours. Sorry. Please report this to:"+
-						SevedroidConstants.DF_SUPPORT_EMAIL+". Thank you.")
+						MobiseveraConstants.DF_SUPPORT_EMAIL+". Thank you.")
 				     .setCancelable(false)
 				     .setPositiveButton("OK", new DialogInterface.OnClickListener() {
 				    	 public void onClick(DialogInterface dialog, int id) {
