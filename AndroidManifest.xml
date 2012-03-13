@@ -7,7 +7,7 @@
     <uses-permission android:name = "android.permission.INTERNET"/>
     <uses-permission android:name = "android.permission.ACCESS_NETWORK_STATE"/>
 
-    <application android:icon="@drawable/icon" android:label="@string/app_name" android:theme="@style/MobiseveraStyle">
+    <application android:icon="@drawable/mobisevera_logo" android:label="@string/app_name" android:theme="@style/MobiseveraStyle">
         <activity android:name=".MobiseveraFrontpageActivity"
                   android:label="@string/app_name">
             <intent-filter>

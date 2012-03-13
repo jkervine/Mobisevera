@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 
@@ -13,8 +14,12 @@ public class MobiseveraFrontpageActivity extends ListActivity {
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		ListAdapter listAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,
+		requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
+		setContentView(R.layout.frontpage);
+        getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.activity_title);
+        ListAdapter listAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,
 				new String[] {"Uusi tuntikirjaus", "Tyšt","...","..."});
+		
 		this.setListAdapter(listAdapter);
 		super.onCreate(savedInstanceState);
 	}
