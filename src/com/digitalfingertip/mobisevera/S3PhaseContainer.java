@@ -2,7 +2,6 @@ package com.digitalfingertip.mobisevera;
 
 import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
@@ -13,8 +12,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.util.Log;
 
 public class S3PhaseContainer {

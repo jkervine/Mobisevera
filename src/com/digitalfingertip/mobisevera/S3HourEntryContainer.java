@@ -14,8 +14,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.util.Log;
 
 /**

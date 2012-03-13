@@ -25,8 +25,6 @@ import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 
-import javax.net.ssl.HttpsURLConnection;
-
 import android.app.Activity;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;

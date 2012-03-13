@@ -2,8 +2,6 @@ package com.digitalfingertip.mobisevera;
 
 import java.util.List;
 
-import com.digitalfingertip.mobisevera.S3UserContainer.S3UserItem;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -20,6 +18,8 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.digitalfingertip.mobisevera.S3UserContainer.S3UserItem;
 
 public class MobiseveraConfig extends Activity implements OnCheckedChangeListener, OnClickListener {
 
