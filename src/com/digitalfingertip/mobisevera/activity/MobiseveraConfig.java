@@ -1,4 +1,4 @@
-package com.digitalfingertip.mobisevera;
+package com.digitalfingertip.mobisevera.activity;
 
 import java.util.List;
 
@@ -19,6 +19,12 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.digitalfingertip.mobisevera.MobiseveraCommsUtils;
+import com.digitalfingertip.mobisevera.MobiseveraContentStore;
+import com.digitalfingertip.mobisevera.R;
+import com.digitalfingertip.mobisevera.S3UserContainer;
+import com.digitalfingertip.mobisevera.R.id;
+import com.digitalfingertip.mobisevera.R.layout;
 import com.digitalfingertip.mobisevera.S3UserContainer.S3UserItem;
 
 public class MobiseveraConfig extends Activity implements OnCheckedChangeListener, OnClickListener {

@@ -123,7 +123,7 @@ public class S3UserContainer {
 	 *
 	 */
 
-	protected class S3UserItem {
+	public class S3UserItem {
 		private String firstName;
 		private String isActive;
 		private String userGUID;

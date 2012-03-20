@@ -193,7 +193,7 @@ public class MobiseveraCommsUtils {
 	 * @return true if connection attempt was ok, otherwise false
 	 */
 	
-	protected String getUserByName(Activity parent, String fName, String lName) {
+	public String getUserByName(Activity parent, String fName, String lName) {
 		S3Response res = null;
 		String soapBody = MobiseveraConstants.SOAP_AUTHN_ENVELOPE.replace(
 				MobiseveraConstants.SOAP_BODY_SUBSTR, MobiseveraConstants.GET_USER_BY_NAME_BODY);
@@ -220,7 +220,7 @@ public class MobiseveraCommsUtils {
 	 * @return
 	 */
 	
-	protected String getAllCasesXml(Activity parent) {
+	public String getAllCasesXml(Activity parent) {
 		S3Response res = null;
 		res = requestWithMessage(parent, MobiseveraConstants.SOAP_AUTHN_ENVELOPE.replace(
 					MobiseveraConstants.SOAP_BODY_SUBSTR, MobiseveraConstants.GET_ALL_CASES_BODY),
@@ -246,7 +246,7 @@ public class MobiseveraCommsUtils {
 	 * @return
 	 */
 	
-	protected String getCaseXMLByGUID(Activity parent, String caseGuid) {
+	public String getCaseXMLByGUID(Activity parent, String caseGuid) {
 		S3Response res = null;
 		String soapMessage = MobiseveraConstants.SOAP_AUTHN_ENVELOPE.replace(
 				MobiseveraConstants.SOAP_BODY_SUBSTR, MobiseveraConstants.GET_CASE_BY_GUID_BODY);
@@ -271,7 +271,7 @@ public class MobiseveraCommsUtils {
 	 * should prepare for a big String in response.
 	 */
 	
-	protected String getPhasesXMLByCaseGUID(Activity parent, String caseGUID) {
+	public String getPhasesXMLByCaseGUID(Activity parent, String caseGUID) {
 		S3Response res = null;
 		String soapBody = MobiseveraConstants.SOAP_AUTHN_ENVELOPE.replace(
 				MobiseveraConstants.SOAP_BODY_SUBSTR, MobiseveraConstants.GET_PHASES_BY_CASE_GUID_BODY);
@@ -295,7 +295,7 @@ public class MobiseveraCommsUtils {
 	 * should prepare for a big String in response.
 	 */
 	
-	protected String getWorkTypesXMLByPhaseGUID(Activity parent, String phaseGUID) {
+	public String getWorkTypesXMLByPhaseGUID(Activity parent, String phaseGUID) {
 		S3Response res = null;
 		String soapBody = MobiseveraConstants.SOAP_AUTHN_ENVELOPE.replace(
 				MobiseveraConstants.SOAP_BODY_SUBSTR, MobiseveraConstants.GET_WORKTYPES_BY_PHASE_BODY);

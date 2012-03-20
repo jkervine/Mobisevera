@@ -6,16 +6,35 @@
   android:orientation="vertical"
   android:layout_width="match_parent"
   android:layout_height="match_parent">
-    <TextView android:textAppearance="?android:attr/textAppearanceLarge" android:layout_height="wrap_content" android:text="@string/apikey_input_title" android:layout_width="wrap_content" android:id="@+id/textView1"></TextView>
+    <TextView android:textAppearance="?android:attr/textAppearanceLarge" 
+        	android:layout_height="wrap_content" 
+        	android:text="@string/apikey_input_title" 
+        	android:layout_width="wrap_content" 
+        	android:id="@+id/apiKeyInputTitleId"
+        	android:textColor="#000000"></TextView>
     <EditText android:id="@+id/apikey_edittext" android:layout_height="wrap_content" android:layout_width="match_parent" android:inputType="textPassword">
         <requestFocus></requestFocus>
     </EditText>
     <CheckBox android:text="@string/apikey_show_password_checkbox" android:id="@+id/apikey_show_password" android:layout_width="wrap_content" android:layout_height="wrap_content"></CheckBox>
     <!-- <Button android:layout_height="wrap_content" android:id="@+id/apikey_submit_button" android:text="@string/apikey_input_submit" android:layout_width="wrap_content"></Button> -->
-    <TextView android:layout_height="wrap_content" android:autoLink = "web" android:text="@string/apikey_desc" android:layout_width="wrap_content"></TextView>
-    <TextView android:id="@+id/text_first_name" android:layout_width="wrap_content" android:textAppearance="?android:attr/textAppearanceSmall" android:layout_height="wrap_content" android:text="@string/apikey_firstname_text"></TextView>
+    <TextView android:layout_height="wrap_content" 
+        android:autoLink = "web" 
+        android:text="@string/apikey_desc" 
+        android:layout_width="wrap_content"
+        android:textColor="#000000"></TextView>
+    <TextView android:id="@+id/text_first_name" 
+        android:layout_width="wrap_content" 
+        android:textAppearance="?android:attr/textAppearanceSmall" 
+        android:layout_height="wrap_content" 
+        android:text="@string/apikey_firstname_text"
+        android:textColor="#000000"></TextView>
     <EditText android:layout_width="match_parent" android:id="@+id/fname_edittext" android:layout_height="wrap_content" android:inputType="textPersonName"></EditText>
-    <TextView android:id="@+id/text_last_name" android:layout_width="wrap_content" android:textAppearance="?android:attr/textAppearanceSmall" android:layout_height="wrap_content" android:text="@string/apikey_lastname_text"></TextView>
+    <TextView android:id="@+id/text_last_name" 
+        android:layout_width="wrap_content" 
+        android:textAppearance="?android:attr/textAppearanceSmall" 
+        android:layout_height="wrap_content" 
+        android:text="@string/apikey_lastname_text"
+        android:textColor="#000000"></TextView>
     <EditText android:layout_width="match_parent" android:id="@+id/lname_edittext" android:layout_height="wrap_content" android:inputType="textPersonName"></EditText>
     <Button android:layout_height="wrap_content" android:id="@+id/apikey_submit_button" android:text="@string/apikey_test_submit" android:layout_width="wrap_content"></Button>    
 </LinearLayout>

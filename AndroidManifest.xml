@@ -8,16 +8,17 @@
     <uses-permission android:name = "android.permission.ACCESS_NETWORK_STATE"/>
 
     <application android:icon="@drawable/mobisevera_logo" android:label="@string/app_name" android:theme="@style/MobiseveraStyle">
-        <activity android:name=".MobiseveraFrontpageActivity"
+        <activity android:name=".activity.MobiseveraFrontpageActivity"
                   android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MobiseveraProjectActivity" />
-        <activity android:name=".MobiseveraConfig"></activity>
-        <activity android:name=".QueryHourEntries"></activity>
-        <activity android:name=".ListHourEntries"></activity>
+        <activity android:name=".activity.MobiseveraClaimActivity" />
+        <activity android:name=".activity.MobiseveraProjectActivity" />
+        <activity android:name=".activity.MobiseveraConfig"></activity>
+        <activity android:name=".activity.QueryHourEntries"></activity>
+        <activity android:name=".activity.ListHourEntries"></activity>
     </application>
 </manifest>

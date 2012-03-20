@@ -1,6 +1,11 @@
-package com.digitalfingertip.mobisevera;
+package com.digitalfingertip.mobisevera.activity;
 
 import java.util.ArrayList;
+
+import com.digitalfingertip.mobisevera.MobiseveraConstants;
+import com.digitalfingertip.mobisevera.R;
+import com.digitalfingertip.mobisevera.S3HourEntryItem;
+import com.digitalfingertip.mobisevera.R.layout;
 
 import android.app.AlertDialog;
 import android.app.Dialog;

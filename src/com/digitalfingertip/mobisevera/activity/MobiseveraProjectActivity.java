@@ -1,8 +1,22 @@
-package com.digitalfingertip.mobisevera;
+package com.digitalfingertip.mobisevera.activity;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+
+import com.digitalfingertip.mobisevera.MobiseveraCommsUtils;
+import com.digitalfingertip.mobisevera.MobiseveraConstants;
+import com.digitalfingertip.mobisevera.MobiseveraContentStore;
+import com.digitalfingertip.mobisevera.R;
+import com.digitalfingertip.mobisevera.S3CaseContainer;
+import com.digitalfingertip.mobisevera.S3CaseItem;
+import com.digitalfingertip.mobisevera.S3PhaseContainer;
+import com.digitalfingertip.mobisevera.S3PhaseItem;
+import com.digitalfingertip.mobisevera.S3WorkTypeContainer;
+import com.digitalfingertip.mobisevera.S3WorkTypeItem;
+import com.digitalfingertip.mobisevera.R.id;
+import com.digitalfingertip.mobisevera.R.layout;
+import com.digitalfingertip.mobisevera.R.menu;
 
 import android.app.Activity;
 import android.app.AlertDialog;

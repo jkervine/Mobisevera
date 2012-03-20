@@ -25,4 +25,15 @@
     <string name="query_by_project_label">Select project</string>
     <string name="query_by_task_label">Select task</string>
     <string name="query_button_label">Fetch claims</string>
+    <!-- Strings for the activity navigation titles, used by MobiseveraNaviContainer -->
+    <string name="navi_frontpage_new_claim">Uusi tuntikirjaus</string>
+    <string name="navi_frontpage_query_claims">Työt</string>
+    <string name="navi_frontpage_settings">Asetukset</string>
+    <string name="navi_main_claim_project">Projekti</string>
+    <string name="navi_main_claim_phase">Vaihe</string>
+    <string name="navi_main_claim_worktype">Työtyyppi</string>
+    <string name="navi_main_claim_description">Kuvaus</string>
+    
+    <string name="hour_label">h</string>
+	<string name="minute_label">min</string>
 </resources>
