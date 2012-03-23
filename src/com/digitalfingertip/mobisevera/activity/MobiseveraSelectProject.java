@@ -190,6 +190,8 @@ public class MobiseveraSelectProject extends Activity implements OnItemSelectedL
 	public void receiveProjectLoadingReadyEvent() {
 		Log.d(TAG,"Received project loading ready event on UI thread...");
 		Log.d(TAG,"Here, length of loaded projects list: "+projectList.size());
+		//append [select] as the first item
+		projectList.add(0, S3CaseContainer.getEmptySelectorElement(this));
 		projectSpinnerRefreshHack();
 		Toast.makeText(this, "Projects are now loaded, you can now make your selection.", Toast.LENGTH_SHORT).show();
 		projectsProgress.setVisibility(View.GONE);

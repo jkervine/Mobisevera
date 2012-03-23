@@ -36,4 +36,7 @@
     
     <string name="hour_label">h</string>
 	<string name="minute_label">min</string>
+	<string name="select_case_item_title">Valitse projekti</string>
+	<string name="select_phase_item_title">Valitse vaihe</string>
+	<string name="select_worktype_item_title">Valitse työn tyyppi</string>
 </resources>

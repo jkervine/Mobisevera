@@ -12,6 +12,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
+import android.content.Context;
 import android.util.Log;
 
 /**
@@ -161,6 +162,20 @@ public class S3CaseContainer {
 		res.setCaseGuid(guidNode.getTextContent());
 		res.setCaseInternalName(internalNameNode.getTextContent());
 		return res;	
+	}
+	
+	/**
+	 * Returns a case item, which can be used as a first element of the spinner,
+	 * displaying [select project].
+	 * @return
+	 */
+	
+	public static S3CaseItem getEmptySelectorElement(Context c) {
+		S3CaseItem res = new S3CaseItem();
+		res.setCaseAccountName(c.getString(R.string.select_case_item_title));
+		res.setCaseGuid(null);
+		res.setCaseInternalName(c.getString(R.string.select_case_item_title));
+		return res;
 	}
 	
 }
