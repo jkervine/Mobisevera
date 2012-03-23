@@ -18,6 +18,9 @@ public class MobiseveraConstants {
 	//public static final String S3_API_URL = "http://192.168.0.2:7000";
 
 	public static final int CODE_INTERNAL_SERVER_ERROR = 500;
+	public static final String CASE_PARCEL_EXTRA_ID = "Case_extra_id";
+	public static final String PHASE_PARCEL_EXTRA_ID = "Phase_extra_id";
+	public static final String WORKTYPE_PARCEL_EXTRA_ID = "Worktype_extra_id";
 	
 	public static final SimpleDateFormat S3_DATE_FORMATTER = new SimpleDateFormat("yyyy-MM-dd");
 	

@@ -20,5 +20,8 @@
         <activity android:name=".activity.MobiseveraConfig"></activity>
         <activity android:name=".activity.QueryHourEntries"></activity>
         <activity android:name=".activity.ListHourEntries"></activity>
+        <activity android:name=".activity.MobiseveraSelectProject"></activity>
+        <activity android:name=".activity.MobiseveraSelectPhase"></activity>
+        <activity android:name=".activity.MobiseveraSelectWorktype"></activity>
     </application>
 </manifest>

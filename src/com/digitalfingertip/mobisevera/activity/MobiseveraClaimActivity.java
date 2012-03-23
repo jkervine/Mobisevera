@@ -39,14 +39,10 @@ public class MobiseveraClaimActivity extends Activity implements OnClickListener
 	 */
 	private int mMinute = 0;
 	
-	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		// TODO Auto-generated method stub
-		super.onActivityResult(requestCode, resultCode, data);
-	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		Log.d(TAG,"OnCreate called on MobiseveraClaimActivity");
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main_claim);
 		TimePicker claimTimePicker = (TimePicker)findViewById(R.id.claimTimePicker);
@@ -126,12 +122,31 @@ public class MobiseveraClaimActivity extends Activity implements OnClickListener
 
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+		Log.d(TAG,"OnItemClick called for MobiseveraClaimActivity. Click on pos: "+position);
 		Intent newIntent = MobiseveraNaviContainer.getIntentForNaviSelection(this, 
 				MobiseveraNaviContainer.MAIN_CLAIM_ACTIVITY, position);
-		startActivity(newIntent);
+		int requestCode = MobiseveraNaviContainer.getRequestCodeForNaviSelection(MobiseveraNaviContainer.MAIN_CLAIM_ACTIVITY, 
+				position);
+		Log.d(TAG,"Launching new activity with class: "+newIntent.getClass()+" with request code: "+requestCode);
+		startActivityForResult(newIntent,requestCode);
 		
 	}
 	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		if(requestCode == MobiseveraNaviContainer.REQUEST_CODE_GET_PHASE) {
+			
+		} else if(requestCode == MobiseveraNaviContainer.REQUEST_CODE_GET_PROJECT) {
+			
+		} else if(requestCode == MobiseveraNaviContainer.REQUEST_CODE_GET_WORKTYPE) {
+			
+		} else if(requestCode == MobiseveraNaviContainer.REQUEST_CODE_GET_DESCRIPTION) {
+			
+		} else {
+			throw new IllegalStateException("Activity called with unsupported requestcode: "+requestCode);
+		}
+	}
 	
 
 }
