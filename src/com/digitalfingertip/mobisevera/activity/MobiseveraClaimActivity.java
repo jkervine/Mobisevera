@@ -134,6 +134,7 @@ public class MobiseveraClaimActivity extends Activity implements OnClickListener
 	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		Log.d(TAG,"onActivity of MobiseveraClaimActivity called! request: "+requestCode+" result:"+resultCode);
 		super.onActivityResult(requestCode, resultCode, data);
 		if(requestCode == MobiseveraNaviContainer.REQUEST_CODE_GET_PHASE) {
 			

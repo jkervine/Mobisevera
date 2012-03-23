@@ -38,6 +38,7 @@ public class MobiseveraSelectProject extends Activity implements OnItemSelectedL
 	private static final String TAG = "Sevedroid";
 	private static final int NOT_CONNECTED_DIALOG_ID = 1;
 	private static final int DIALOG_ID_MISSING_CASEGUID = 2;
+	private static boolean selected = false;
 	
 	/**
 	 * The list containing the Cases this user id has access to and the parcel identifier
@@ -60,6 +61,8 @@ public class MobiseveraSelectProject extends Activity implements OnItemSelectedL
 			return;
 		}
         MobiseveraContentStore contentStore = new MobiseveraContentStore(this); 
+        // test if the user has set the api key, if yes, then follow on to load up the projects
+        // if not, then auto start the config activity
         if(contentStore.fetchApiKey() == null) {
         	Log.d(TAG,"Finishing  activity because the API key is not found in contentstore.");
         	Toast.makeText(this,"Please input your API key to use this app!",Toast.LENGTH_LONG).show();
@@ -69,8 +72,9 @@ public class MobiseveraSelectProject extends Activity implements OnItemSelectedL
         }
         if(savedInstanceState == null) {
         	Log.d(TAG, "Saved instance state is null, recreating Activity state.");
+        	selected = false;
         	projectsProgress = (ProgressBar)findViewById(R.id.projectsLoadProgress);
-        	projectNameSpinner = (Spinner)findViewById(R.id.projectnamespinner);
+        	projectNameSpinner = (Spinner)findViewById(R.id.projectNameSpinner);
         	projectList = new ArrayList<S3CaseItem>();
         	projectsProgress.setVisibility(View.VISIBLE);
         	new LoadCasesXMLTask(this).execute();
@@ -79,8 +83,6 @@ public class MobiseveraSelectProject extends Activity implements OnItemSelectedL
         	Log.d(TAG, "Saved instance state is not null, restoring Activity state...");
         	projectList = savedInstanceState.getParcelableArrayList(CASEITEMLIST_PARCEL_ID);
         }
-        // test if the user has set the api key, if yes, then follow on to load up the projects
-        // if not, then auto start the config activity
         projectAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, projectList);
         projectAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         projectNameSpinner.setAdapter(projectAdapter);
@@ -92,6 +94,11 @@ public class MobiseveraSelectProject extends Activity implements OnItemSelectedL
 	public void onItemSelected(AdapterView<?> adapterView, View view, int position,
 			long id) {
 		Log.d(TAG,"OnItemSelected called: adapterViewID:"+adapterView.getId()+"view ID:"+view.getId()+", pos:"+position+" id:"+id);
+		if(!selected) {
+			Log.d(TAG,"Ignoring the first onItemSelected due to layout draw.");
+			selected = true;
+			return;
+		}
 		S3CaseItem caseItem = projectList.get(position);
 		Log.d(TAG,"User selected case pos: "+position+" with GUID: "+caseItem.getCaseGuid());
 		Intent backToCallerIntent = new Intent();
@@ -143,7 +150,12 @@ public class MobiseveraSelectProject extends Activity implements OnItemSelectedL
 		@Override
 		protected Boolean doInBackground(Void... nullArgs) {
 			Log.d(TAG,"Started doInBackground for LoadCasesXMLTask!");
-			mParent.projectNameSpinner.setClickable(false);
+			if(mParent == null) {
+				Log.e(TAG,"Backgroundtask cancelled because reference to parent activity is null!");
+				this.cancel(true);
+			}
+			Spinner projectNameSpinner = (Spinner)mParent.findViewById(R.id.projectNameSpinner);
+			projectNameSpinner.setClickable(false);
 			publishProgress(STATUS_INIT);
 			MobiseveraCommsUtils scu = new MobiseveraCommsUtils();
 			S3CaseContainer S3Cases = S3CaseContainer.getInstance();
@@ -193,7 +205,7 @@ public class MobiseveraSelectProject extends Activity implements OnItemSelectedL
 	
 	private void projectSpinnerRefreshHack() {
 		this.projectAdapter.notifyDataSetChanged();
-		projectNameSpinner = (Spinner)findViewById(R.id.projectnamespinner);
+		projectNameSpinner = (Spinner)findViewById(R.id.projectNameSpinner);
         projectAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item,projectList);
         projectAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         projectNameSpinner.setOnItemSelectedListener(this);
