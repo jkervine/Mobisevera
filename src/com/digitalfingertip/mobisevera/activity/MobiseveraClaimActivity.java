@@ -1,11 +1,15 @@
 package com.digitalfingertip.mobisevera.activity;
 
+import com.digitalfingertip.mobisevera.MobiseveraConstants;
 import com.digitalfingertip.mobisevera.MobiseveraNaviAdapter;
 import com.digitalfingertip.mobisevera.MobiseveraNaviContainer;
 import com.digitalfingertip.mobisevera.R;
 import com.digitalfingertip.mobisevera.R.id;
 import com.digitalfingertip.mobisevera.R.layout;
 import com.digitalfingertip.mobisevera.R.string;
+import com.digitalfingertip.mobisevera.S3CaseItem;
+import com.digitalfingertip.mobisevera.S3PhaseItem;
+import com.digitalfingertip.mobisevera.S3WorkTypeItem;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -28,7 +32,23 @@ import android.widget.TimePicker;
 
 public class MobiseveraClaimActivity extends Activity implements OnClickListener, OnItemClickListener {
 
+	/**
+	 * Containers for selected project, phase and worktype.
+	 */
+	
+	private S3CaseItem selectedCase = null;
+	private S3PhaseItem selectedPhase = null;
+	private S3WorkTypeItem selectedWorkType = null;
+	
+	private String selectedDescription = null;
+	
+	MobiseveraNaviAdapter listAdapter = null;
+	
 	public static final String TAG = "Sevedroid";
+	private static final int PROJECT_NAVI_INDEX = 0;
+	private static final int PHASE_NAVI_INDEX = 1;
+	private static final int WORKTYPE_NAVI_INDEX = 2;
+	private static final int DESCRIPTION_NAVI_INDEX = 3;
 	
 	/**
 	 * Current hour as selected by the user for claiming 
@@ -53,7 +73,10 @@ public class MobiseveraClaimActivity extends Activity implements OnClickListener
 		claimTimePicker.setIs24HourView(true);
 		claimTimePicker.setVisibility(View.GONE);
 		String[] naviTitles = MobiseveraNaviContainer.getNaviarrayForActivity(this, MobiseveraNaviContainer.MAIN_CLAIM_ACTIVITY);
-        MobiseveraNaviAdapter listAdapter = new MobiseveraNaviAdapter(this,R.layout.mobisevera_list_item,naviTitles);
+        for (int i = 0; i < naviTitles.length; i++) {
+        	naviTitles[i] = naviTitles[i].replace(MobiseveraConstants.SUBST_PATTERN, getString(R.string.not_selected));
+        }
+		listAdapter = new MobiseveraNaviAdapter(this,R.layout.mobisevera_list_item,naviTitles);
         lv.setOnItemClickListener(this);
 		lv.setAdapter(listAdapter);
 		
@@ -132,18 +155,42 @@ public class MobiseveraClaimActivity extends Activity implements OnClickListener
 		
 	}
 	
+	/**
+	 * Update the navigation with new information when it is received. For example, when user selects a new project,
+	 * this changes the "Project [not selected] to Project: [project name].
+	 * @param position
+	 * @param newString
+	 */
+	
+	private void updateNaviTitles(int position, String newString) {
+		ListView lv = (ListView)this.findViewById(R.id.main_claim_navi_list);
+		String[] naviTitles = MobiseveraNaviContainer.getNaviarrayForActivity(this, MobiseveraNaviContainer.MAIN_CLAIM_ACTIVITY);
+        naviTitles[position] = naviTitles[position].replace(MobiseveraConstants.SUBST_PATTERN, newString);
+		listAdapter = new MobiseveraNaviAdapter(this,R.layout.mobisevera_list_item,naviTitles);
+        lv.setOnItemClickListener(this);
+		lv.setAdapter(listAdapter);
+	}
+	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		Log.d(TAG,"onActivity of MobiseveraClaimActivity called! request: "+requestCode+" result:"+resultCode);
+		Log.d(TAG,"onActivityResult of MobiseveraClaimActivity called! request: "+requestCode+" result:"+resultCode);
 		super.onActivityResult(requestCode, resultCode, data);
 		if(requestCode == MobiseveraNaviContainer.REQUEST_CODE_GET_PHASE) {
-			
+			Log.d(TAG,"Get phase:");
 		} else if(requestCode == MobiseveraNaviContainer.REQUEST_CODE_GET_PROJECT) {
-			
+			Log.d(TAG,"Get project:");
+				S3CaseItem caseItem = (S3CaseItem)data.getParcelableExtra((MobiseveraConstants.CASE_PARCEL_EXTRA_ID));
+				if(caseItem != null) {
+					this.selectedCase=caseItem;
+					updateNaviTitles(PROJECT_NAVI_INDEX, caseItem.getCaseInternalName());
+				} else {
+					Log.e(TAG,"Got null case bean from the intent.");
+					return;
+				}
 		} else if(requestCode == MobiseveraNaviContainer.REQUEST_CODE_GET_WORKTYPE) {
-			
+			Log.d(TAG,"Get work:");
 		} else if(requestCode == MobiseveraNaviContainer.REQUEST_CODE_GET_DESCRIPTION) {
-			
+			Log.d(TAG,"Get description:");
 		} else {
 			throw new IllegalStateException("Activity called with unsupported requestcode: "+requestCode);
 		}

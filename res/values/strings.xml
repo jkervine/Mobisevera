@@ -29,13 +29,14 @@
     <string name="navi_frontpage_new_claim">Uusi tuntikirjaus</string>
     <string name="navi_frontpage_query_claims">Työt</string>
     <string name="navi_frontpage_settings">Asetukset</string>
-    <string name="navi_main_claim_project">Projekti</string>
-    <string name="navi_main_claim_phase">Vaihe</string>
-    <string name="navi_main_claim_worktype">Työtyyppi</string>
-    <string name="navi_main_claim_description">Kuvaus</string>
+    <string name="navi_main_claim_project">Projekti [%STRING"]</string>
+    <string name="navi_main_claim_phase">Vaihe [%STRING]</string>
+    <string name="navi_main_claim_worktype">Työtyyppi [%STRING]</string>
+    <string name="navi_main_claim_description">Kuvaus [%STRING]</string>
     
     <string name="hour_label">h</string>
 	<string name="minute_label">min</string>
+	<string name="not_selected">Ei valittu</string>
 	<string name="select_case_item_title">Valitse projekti</string>
 	<string name="select_phase_item_title">Valitse vaihe</string>
 	<string name="select_worktype_item_title">Valitse työn tyyppi</string>

@@ -8,6 +8,8 @@ public class MobiseveraConstants {
 	public static final String HTTPCLIENT_USERAGENT = "Sevedroid Android Application v."+APP_VERSION;
 	public static final String DF_SUPPORT_EMAIL = "support@digitalfingertip.com";
 	
+	//TODO:CHECK if the this is the way to do translation string substitution in android??
+	public static final String SUBST_PATTERN = "%STRING";
 	public static final String API_KEY_SUBSTR = "%API_KEY_HERE%";
 	public static final String SOAP_BODY_SUBSTR = "%BODY_CONTENT_HERE%";
 	public static final String MAGIC_CASE_GUID_FOR_ALL_WILDCARD = "*";
