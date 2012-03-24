@@ -22,13 +22,20 @@ public class MobiseveraFrontpageActivity extends ListActivity implements OnItemC
 
 	
 	public static final String TAG = "Sevedroid";
+	public static final String NAVITITLES_PARCEL_ID = "naviTitlesParcelId";
+	private String [] naviTitles = null;
+	
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
 		setContentView(R.layout.frontpage);
         getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.activity_title);
-        String[] naviTitles = MobiseveraNaviContainer.getNaviarrayForActivity(this, MobiseveraNaviContainer.NAVI_FRONT_ACTIVITY);
+        if(savedInstanceState == null) {
+        	naviTitles = MobiseveraNaviContainer.getNaviarrayForActivity(this, MobiseveraNaviContainer.NAVI_FRONT_ACTIVITY);
+        } else {
+        	naviTitles = savedInstanceState.getStringArray(NAVITITLES_PARCEL_ID);
+        }
         MobiseveraNaviAdapter listAdapter = new MobiseveraNaviAdapter(this,R.layout.mobisevera_list_item,naviTitles);
         this.getListView().setOnItemClickListener(this);
 		this.setListAdapter(listAdapter);
@@ -69,6 +76,7 @@ public class MobiseveraFrontpageActivity extends ListActivity implements OnItemC
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		// TODO Auto-generated method stub
+		outState.putStringArray(NAVITITLES_PARCEL_ID, naviTitles);
 		super.onSaveInstanceState(outState);
 	}
 
