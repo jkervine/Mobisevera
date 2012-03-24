@@ -12,6 +12,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
+import android.content.Context;
 import android.util.Log;
 
 public class S3WorkTypeContainer {
@@ -102,5 +103,18 @@ public class S3WorkTypeContainer {
 		}
 		return res;
 
+	}
+	
+	/**
+	 * Returns a worktype item, which can be used as a first element of the spinner,
+	 * displaying [select work type].
+	 * @return
+	 */
+	
+	public static S3WorkTypeItem getEmptySelectorElement(Context c) {
+		S3WorkTypeItem res = new S3WorkTypeItem();
+		res.setWorkTypeName(c.getString(R.string.select_worktype_item_title));
+		res.setWorkTypeGUID(null);
+		return res;
 	}
 }

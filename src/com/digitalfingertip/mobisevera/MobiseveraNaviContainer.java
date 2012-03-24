@@ -41,6 +41,8 @@ public class MobiseveraNaviContainer {
 	
 	public static final int RESULT_CODE_NO_API_KEY = 101;
 	public static final int RESULT_CODE_PROJECT_BEAN_LOADED = 102;
+	public static final int RESULT_CODE_PHASE_BEAN_LOADED = 103;
+	public static final int RESULT_CODE_WORKTYPE_BEAN_LOADED = 104;
 	
 	/**
 	 * 

@@ -12,6 +12,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
+import android.content.Context;
 import android.util.Log;
 
 public class S3PhaseContainer {
@@ -101,6 +102,19 @@ public class S3PhaseContainer {
 		}
 		return res;
 
+	}
+	
+	/**
+	 * Returns a phase item, which can be used as a first element of the spinner,
+	 * displaying [select phase].
+	 * @return
+	 */
+	
+	public static S3PhaseItem getEmptySelectorElement(Context c) {
+		S3PhaseItem res = new S3PhaseItem();
+		res.setPhaseName(c.getString(R.string.select_phase_item_title));
+		res.setPhaseGUID(null);
+		return res;
 	}
 
 	
