@@ -1,16 +1,5 @@
 package com.digitalfingertip.mobisevera.activity;
 
-import com.digitalfingertip.mobisevera.MobiseveraConstants;
-import com.digitalfingertip.mobisevera.MobiseveraNaviAdapter;
-import com.digitalfingertip.mobisevera.MobiseveraNaviContainer;
-import com.digitalfingertip.mobisevera.R;
-import com.digitalfingertip.mobisevera.R.id;
-import com.digitalfingertip.mobisevera.R.layout;
-import com.digitalfingertip.mobisevera.R.string;
-import com.digitalfingertip.mobisevera.S3CaseItem;
-import com.digitalfingertip.mobisevera.S3PhaseItem;
-import com.digitalfingertip.mobisevera.S3WorkTypeItem;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -22,6 +11,14 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TimePicker;
+
+import com.digitalfingertip.mobisevera.MobiseveraConstants;
+import com.digitalfingertip.mobisevera.MobiseveraNaviAdapter;
+import com.digitalfingertip.mobisevera.MobiseveraNaviContainer;
+import com.digitalfingertip.mobisevera.R;
+import com.digitalfingertip.mobisevera.S3CaseItem;
+import com.digitalfingertip.mobisevera.S3PhaseItem;
+import com.digitalfingertip.mobisevera.S3WorkTypeItem;
 
 /**
  * This activity is used to pick the amount of time the user want to claim and launch subactivities to
@@ -150,6 +147,15 @@ public class MobiseveraClaimActivity extends Activity implements OnClickListener
 				MobiseveraNaviContainer.MAIN_CLAIM_ACTIVITY, position);
 		int requestCode = MobiseveraNaviContainer.getRequestCodeForNaviSelection(MobiseveraNaviContainer.MAIN_CLAIM_ACTIVITY, 
 				position);
+		//set appropriate GUID as extra data to intent, because it is needed in the query
+		if(position == PROJECT_NAVI_INDEX) {
+			//TODO: For consistency, it would be nice that the required USER GUID would be passed in from here.
+			newIntent.putExtra(MobiseveraConstants.GUID_PARAMETER_EXTRA_ID, ""); 
+		} else if(position == PHASE_NAVI_INDEX) {
+			newIntent.putExtra(MobiseveraConstants.GUID_PARAMETER_EXTRA_ID, selectedCase.getCaseGuid());
+		} else if(position == WORKTYPE_NAVI_INDEX) {
+			newIntent.putExtra(MobiseveraConstants.GUID_PARAMETER_EXTRA_ID, selectedPhase.getPhaseGUID());
+		}
 		Log.d(TAG,"Launching new activity with class: "+newIntent.getClass()+" with request code: "+requestCode);
 		startActivityForResult(newIntent,requestCode);
 		
@@ -177,9 +183,17 @@ public class MobiseveraClaimActivity extends Activity implements OnClickListener
 		super.onActivityResult(requestCode, resultCode, data);
 		if(requestCode == MobiseveraNaviContainer.REQUEST_CODE_GET_PHASE) {
 			Log.d(TAG,"Get phase:");
+			S3PhaseItem phaseItem = (S3PhaseItem)data.getParcelableExtra(MobiseveraConstants.PHASE_PARCEL_EXTRA_ID);
+			if(phaseItem != null) {
+				this.selectedPhase=phaseItem;
+				updateNaviTitles(PHASE_NAVI_INDEX, phaseItem.getPhaseName());
+			} else {
+				Log.e(TAG,"Got null phase bean from the intent.");
+				return;
+			}
 		} else if(requestCode == MobiseveraNaviContainer.REQUEST_CODE_GET_PROJECT) {
 			Log.d(TAG,"Get project:");
-				S3CaseItem caseItem = (S3CaseItem)data.getParcelableExtra((MobiseveraConstants.CASE_PARCEL_EXTRA_ID));
+				S3CaseItem caseItem = (S3CaseItem)data.getParcelableExtra(MobiseveraConstants.CASE_PARCEL_EXTRA_ID);
 				if(caseItem != null) {
 					this.selectedCase=caseItem;
 					updateNaviTitles(PROJECT_NAVI_INDEX, caseItem.getCaseInternalName());
@@ -188,7 +202,15 @@ public class MobiseveraClaimActivity extends Activity implements OnClickListener
 					return;
 				}
 		} else if(requestCode == MobiseveraNaviContainer.REQUEST_CODE_GET_WORKTYPE) {
-			Log.d(TAG,"Get work:");
+			Log.d(TAG,"Get worktype:");
+			S3WorkTypeItem workTypeItem = (S3WorkTypeItem)data.getParcelableExtra(MobiseveraConstants.WORKTYPE_PARCEL_EXTRA_ID);
+			if(workTypeItem != null) {
+				this.selectedWorkType=workTypeItem;
+				updateNaviTitles(WORKTYPE_NAVI_INDEX, workTypeItem.getWorkTypeName());
+			} else {
+				Log.e(TAG,"Got null worktype bean from the intent.");
+				return;
+			}
 		} else if(requestCode == MobiseveraNaviContainer.REQUEST_CODE_GET_DESCRIPTION) {
 			Log.d(TAG,"Get description:");
 		} else {
