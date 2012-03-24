@@ -81,7 +81,11 @@ public class MobiseveraSelectProject extends Activity implements OnItemSelectedL
         	Toast.makeText(this, "Started to load projects... they will be available once loaded...", Toast.LENGTH_SHORT).show();
         } else {
         	Log.d(TAG, "Saved instance state is not null, restoring Activity state...");
+        	projectsProgress = (ProgressBar)findViewById(R.id.projectsLoadProgress);
         	projectList = savedInstanceState.getParcelableArrayList(CASEITEMLIST_PARCEL_ID);
+        	Log.d(TAG, "Restored projectList with "+((projectList == null) ? "null": projectList.size())+" items");
+         	projectNameSpinner = (Spinner)findViewById(R.id.projectNameSpinner);
+         	projectsProgress.setVisibility(View.GONE);
         }
         projectAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, projectList);
         projectAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -89,6 +93,15 @@ public class MobiseveraSelectProject extends Activity implements OnItemSelectedL
         projectNameSpinner.setOnItemSelectedListener(this);
         
     }
+	
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		//TODO:Critical: (*) if instance state is saved during the projects are loading, spinners stay empty!!!
+		Log.d(TAG,"onSaveInstanceState called!");
+		outState.putParcelableArrayList(CASEITEMLIST_PARCEL_ID, projectList);
+		selected = false; // otherwise onItemSelected fires after unparceling in onCreate
+		super.onSaveInstanceState(outState);
+	}
 	
 	@Override
 	public void onItemSelected(AdapterView<?> adapterView, View view, int position,
