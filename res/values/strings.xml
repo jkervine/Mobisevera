@@ -40,4 +40,8 @@
 	<string name="select_case_item_title">Valitse projekti</string>
 	<string name="select_phase_item_title">Valitse vaihe</string>
 	<string name="select_worktype_item_title">Valitse työn tyyppi</string>
+	
+	<!-- strings for dialogs -->
+	<string name = "dialog_text_select_phase_before_worktype">Työvaihe pitää valita ennen työtyyppiä</string>
+	<string name = "dialog_text_select_project_before_phase">Projekti pitää valita ennen työvaihetta</string>
 </resources>

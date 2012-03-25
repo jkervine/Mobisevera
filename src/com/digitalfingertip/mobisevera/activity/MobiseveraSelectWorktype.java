@@ -47,7 +47,7 @@ public class MobiseveraSelectWorktype extends Activity implements OnItemSelected
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.select_phase_layout);
+        setContentView(R.layout.select_worktype_layout);
         Log.d(TAG,"OnCreate called on MobiseveraSelectphase Activity!");
         if(MobiseveraCommsUtils.checkIfConnected(this) == false) {
 			showDialog(NOT_CONNECTED_DIALOG_ID);
@@ -66,17 +66,20 @@ public class MobiseveraSelectWorktype extends Activity implements OnItemSelected
         if(savedInstanceState == null) {
         	Log.d(TAG, "Saved instance state is null, recreating Activity state.");
         	selected = false;
-        	workTypesProgress = (ProgressBar)findViewById(R.id.phasesLoadProgress);
+        	workTypesProgress = (ProgressBar)findViewById(R.id.workTypesLoadProgress);
         	workTypeNameSpinner = (Spinner)findViewById(R.id.workTypeNameSpinner);
         	workTypeList = new ArrayList<S3WorkTypeItem>();
         	workTypesProgress.setVisibility(View.VISIBLE);
-        	//TODO:propagate this from the previous view
-        	String phaseGuid = "Dummy";
+        	String phaseGuid = getIntent().getStringExtra(MobiseveraConstants.GUID_PARAMETER_EXTRA_ID);
+        	if(phaseGuid == null || phaseGuid.length() == 0) {
+        		Log.e(TAG,"Error: phaseGuid is null or empty when trying to get the worktypes for this phase");
+        		throw new IllegalStateException("PhaseGuid is required to get the worktypes of this phase!");
+        	}
         	new LoadWorkTypesXMLTask(this).execute(phaseGuid);
-        	Toast.makeText(this, "Started to load phases... they will be available once loaded...", Toast.LENGTH_SHORT).show();
+        	Toast.makeText(this, "Started to load worktypes... they will be available once loaded...", Toast.LENGTH_SHORT).show();
         } else {
         	Log.d(TAG, "Saved instance state is not null, restoring Activity state...");
-        	workTypesProgress = (ProgressBar)findViewById(R.id.phasesLoadProgress);
+        	workTypesProgress = (ProgressBar)findViewById(R.id.workTypesLoadProgress);
         	workTypeList = savedInstanceState.getParcelableArrayList(WORKTYPEITEMLIST_PARCEL_ID);
         	Log.d(TAG, "Restored workTypeList with "+((workTypeList == null) ? "null": workTypeList.size())+" items");
          	workTypeNameSpinner = (Spinner)findViewById(R.id.workTypeNameSpinner);
@@ -200,7 +203,7 @@ public class MobiseveraSelectWorktype extends Activity implements OnItemSelected
 		Log.d(TAG,"Here, length of loaded phases list: "+workTypeList.size());
 		//append [select] as the first item
 		workTypeList.add(0, S3WorkTypeContainer.getEmptySelectorElement(this));
-		phaseSpinnerRefreshHack();
+		workTypeSpinnerRefreshHack();
 		Toast.makeText(this, "phases are now loaded, you can now make your selection.", Toast.LENGTH_SHORT).show();
 		workTypesProgress.setVisibility(View.GONE);
 	}
@@ -213,7 +216,7 @@ public class MobiseveraSelectWorktype extends Activity implements OnItemSelected
 	 *  binary switch there on that method.
 	 */
 	
-	private void phaseSpinnerRefreshHack() {
+	private void workTypeSpinnerRefreshHack() {
 		this.workTypeAdapter.notifyDataSetChanged();
 		workTypeNameSpinner = (Spinner)findViewById(R.id.workTypeNameSpinner);
         workTypeAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item,workTypeList);

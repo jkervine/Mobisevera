@@ -70,8 +70,11 @@ public class MobiseveraSelectPhase extends Activity implements OnItemSelectedLis
         	phaseNameSpinner = (Spinner)findViewById(R.id.phaseNameSpinner);
         	phaseList = new ArrayList<S3PhaseItem>();
         	phasesProgress.setVisibility(View.VISIBLE);
-        	//TODO:propagate this from the previous view
-        	String caseGuid = "Dummy";
+        	String caseGuid = getIntent().getStringExtra(MobiseveraConstants.GUID_PARAMETER_EXTRA_ID);
+        	if(caseGuid == null || caseGuid.length() == 0) {
+        		Log.e(TAG,"Error: caseGuid is null or empty when trying to get the phases for this case");
+        		throw new IllegalStateException("CaseGuid is requires to get the phases of this case!");
+        	}
         	new LoadPhasesXMLTask(this).execute(caseGuid);
         	Toast.makeText(this, "Started to load phases... they will be available once loaded...", Toast.LENGTH_SHORT).show();
         } else {

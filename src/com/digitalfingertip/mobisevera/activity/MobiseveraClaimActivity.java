@@ -1,6 +1,9 @@
 package com.digitalfingertip.mobisevera.activity;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -46,6 +49,8 @@ public class MobiseveraClaimActivity extends Activity implements OnClickListener
 	private static final int PHASE_NAVI_INDEX = 1;
 	private static final int WORKTYPE_NAVI_INDEX = 2;
 	private static final int DESCRIPTION_NAVI_INDEX = 3;
+	private static final int DIALOG_ID_SELECT_PROJECT_BEFORE_PHASE = 0;
+	private static final int DIALOG_ID_SELECT_PHASE_BEFORE_WORKTYPE = 1;
 	
 	/**
 	 * Current hour as selected by the user for claiming 
@@ -109,6 +114,31 @@ public class MobiseveraClaimActivity extends Activity implements OnClickListener
 		}
 	}
 	
+	
+	
+	@Override
+	protected Dialog onCreateDialog(int id) {
+		String message = "";
+		switch(id) {
+		case DIALOG_ID_SELECT_PHASE_BEFORE_WORKTYPE:
+			message = getString(R.string.dialog_text_select_phase_before_worktype);
+			break;
+		case DIALOG_ID_SELECT_PROJECT_BEFORE_PHASE:
+			message = getString(R.string.dialog_text_select_project_before_phase);
+			break;
+		} 
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setMessage(message)
+			.setCancelable(false)
+			.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
+					return;
+				}
+			});
+		AlertDialog alert = builder.create();
+		return alert;	
+	}
+
 	private void moveTimeFromButtonToTimePicker() {
 		TimePicker claimTimePicker = (TimePicker)findViewById(R.id.claimTimePicker);
 		claimTimePicker.setCurrentHour(mHour);
@@ -144,8 +174,16 @@ public class MobiseveraClaimActivity extends Activity implements OnClickListener
 			//TODO: For consistency, it would be nice that the required USER GUID would be passed in from here.
 			newIntent.putExtra(MobiseveraConstants.GUID_PARAMETER_EXTRA_ID, ""); 
 		} else if(position == PHASE_NAVI_INDEX) {
+			if(selectedCase == null) {
+				showDialog(DIALOG_ID_SELECT_PROJECT_BEFORE_PHASE);
+				return;
+			}
 			newIntent.putExtra(MobiseveraConstants.GUID_PARAMETER_EXTRA_ID, selectedCase.getCaseGuid());
 		} else if(position == WORKTYPE_NAVI_INDEX) {
+			if(selectedPhase == null) {
+				showDialog(DIALOG_ID_SELECT_PHASE_BEFORE_WORKTYPE);
+				return;
+			}
 			newIntent.putExtra(MobiseveraConstants.GUID_PARAMETER_EXTRA_ID, selectedPhase.getPhaseGUID());
 		}
 		Log.d(TAG,"Launching new activity with class: "+newIntent.getClass()+" with request code: "+requestCode);
