@@ -64,19 +64,11 @@ public class MobiseveraClaimActivity extends Activity implements OnClickListener
 		setContentView(R.layout.main_claim);
 		TimePicker claimTimePicker = (TimePicker)findViewById(R.id.claimTimePicker);
 		Button showHourWidgetButton = (Button)findViewById(R.id.showHourWidgetButton);
-		ListView lv = (ListView)findViewById(R.id.main_claim_navi_list);
 		moveTimeFromPickerToButton(mHour, mMinute);
 		showHourWidgetButton.setOnClickListener(this);
 		claimTimePicker.setIs24HourView(true);
 		claimTimePicker.setVisibility(View.GONE);
-		String[] naviTitles = MobiseveraNaviContainer.getNaviarrayForActivity(this, MobiseveraNaviContainer.MAIN_CLAIM_ACTIVITY);
-        for (int i = 0; i < naviTitles.length; i++) {
-        	naviTitles[i] = naviTitles[i].replace(MobiseveraConstants.SUBST_PATTERN, getString(R.string.not_selected));
-        }
-		listAdapter = new MobiseveraNaviAdapter(this,R.layout.mobisevera_list_item,naviTitles);
-        lv.setOnItemClickListener(this);
-		lv.setAdapter(listAdapter);
-		
+        updateNaviTitles();		
 	}
 
 	@Override
@@ -164,19 +156,71 @@ public class MobiseveraClaimActivity extends Activity implements OnClickListener
 	/**
 	 * Update the navigation with new information when it is received. For example, when user selects a new project,
 	 * this changes the "Project [not selected] to Project: [project name].
-	 * @param position
-	 * @param newString
+	 * Data is coming from this class's instance variables
 	 */
 	
-	private void updateNaviTitles(int position, String newString) {
-		ListView lv = (ListView)this.findViewById(R.id.main_claim_navi_list);
+	private void updateNaviTitles() {
+		Log.d(TAG,"Updating navititles. ");
 		String[] naviTitles = MobiseveraNaviContainer.getNaviarrayForActivity(this, MobiseveraNaviContainer.MAIN_CLAIM_ACTIVITY);
-        naviTitles[position] = naviTitles[position].replace(MobiseveraConstants.SUBST_PATTERN, newString);
+		for(int i = 0; i < naviTitles.length; i++) {
+			switch(i) {
+			case 0: 
+				if(selectedCase != null && selectedCase.getCaseInternalName() != null) {
+					naviTitles[i] = naviTitles[i].replace(MobiseveraConstants.SUBST_PATTERN, selectedCase.getCaseInternalName());
+				} else {
+					naviTitles[i] = naviTitles[i].replace(MobiseveraConstants.SUBST_PATTERN, 
+							getString(R.string.not_selected));					
+				}
+				break;
+			case 1:
+				if(selectedPhase != null && selectedPhase.getPhaseName() != null) {
+					naviTitles[i] = naviTitles[i].replace(MobiseveraConstants.SUBST_PATTERN, selectedPhase.getPhaseName());
+				} else {
+					naviTitles[i] = naviTitles[i].replace(MobiseveraConstants.SUBST_PATTERN, 
+							getString(R.string.not_selected));					
+				}
+				break;
+			case 2: 
+				if(selectedWorkType != null && selectedWorkType.getWorkTypeName() != null) {
+					naviTitles[i] = naviTitles[i].replace(MobiseveraConstants.SUBST_PATTERN, selectedWorkType.getWorkTypeName());
+				} else {
+					naviTitles[i] = naviTitles[i].replace(MobiseveraConstants.SUBST_PATTERN, 
+							getString(R.string.not_selected));					
+				}
+				break;
+			case 3:
+				if(selectedDescription != null) {
+					naviTitles[i] = naviTitles[i].replace(MobiseveraConstants.SUBST_PATTERN, truncateDesc(selectedDescription));
+				} else {
+					naviTitles[i] = naviTitles[i].replace(MobiseveraConstants.SUBST_PATTERN, 
+							getString(R.string.not_selected));
+				}
+			}
+		}
+		ListView lv = (ListView)this.findViewById(R.id.main_claim_navi_list);
 		listAdapter = new MobiseveraNaviAdapter(this,R.layout.mobisevera_list_item,naviTitles);
         lv.setOnItemClickListener(this);
 		lv.setAdapter(listAdapter);
 	}
 	
+	/**
+	 * Make the given claim description text shorter (17 chars + 3 for ellipsis) so that it can fit in Mobisevera menu
+	 * @param selectedDescriptionParam
+	 * @return
+	 */
+	
+	private CharSequence truncateDesc(final String selectedDescriptionParam) {
+		if(selectedDescriptionParam == null) {
+			return null;
+		} else {
+			try {
+				return(selectedDescriptionParam.substring(0,17)+"...");
+			} catch (IndexOutOfBoundsException e) {
+				return selectedDescriptionParam;
+			}
+		}
+	}
+
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		Log.d(TAG,"onActivityResult of MobiseveraClaimActivity called! request: "+requestCode+" result:"+resultCode);
@@ -186,7 +230,7 @@ public class MobiseveraClaimActivity extends Activity implements OnClickListener
 			S3PhaseItem phaseItem = (S3PhaseItem)data.getParcelableExtra(MobiseveraConstants.PHASE_PARCEL_EXTRA_ID);
 			if(phaseItem != null) {
 				this.selectedPhase=phaseItem;
-				updateNaviTitles(PHASE_NAVI_INDEX, phaseItem.getPhaseName());
+				updateNaviTitles();
 			} else {
 				Log.e(TAG,"Got null phase bean from the intent.");
 				return;
@@ -196,7 +240,7 @@ public class MobiseveraClaimActivity extends Activity implements OnClickListener
 				S3CaseItem caseItem = (S3CaseItem)data.getParcelableExtra(MobiseveraConstants.CASE_PARCEL_EXTRA_ID);
 				if(caseItem != null) {
 					this.selectedCase=caseItem;
-					updateNaviTitles(PROJECT_NAVI_INDEX, caseItem.getCaseInternalName());
+					updateNaviTitles();
 				} else {
 					Log.e(TAG,"Got null case bean from the intent.");
 					return;
@@ -206,7 +250,7 @@ public class MobiseveraClaimActivity extends Activity implements OnClickListener
 			S3WorkTypeItem workTypeItem = (S3WorkTypeItem)data.getParcelableExtra(MobiseveraConstants.WORKTYPE_PARCEL_EXTRA_ID);
 			if(workTypeItem != null) {
 				this.selectedWorkType=workTypeItem;
-				updateNaviTitles(WORKTYPE_NAVI_INDEX, workTypeItem.getWorkTypeName());
+				updateNaviTitles();
 			} else {
 				Log.e(TAG,"Got null worktype bean from the intent.");
 				return;
