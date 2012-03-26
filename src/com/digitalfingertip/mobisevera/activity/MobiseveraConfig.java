@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -38,7 +39,9 @@ public class MobiseveraConfig extends Activity implements OnCheckedChangeListene
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
 		setContentView(R.layout.apikeyinput);
+		getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.activity_title);
 		mContentStore = new MobiseveraContentStore(this);
 		CheckBox cb = (CheckBox)findViewById(R.id.apikey_show_password);
 		EditText ed = (EditText)findViewById(R.id.apikey_edittext);

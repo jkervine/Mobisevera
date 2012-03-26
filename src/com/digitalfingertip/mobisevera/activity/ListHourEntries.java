@@ -14,6 +14,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Window;
 import android.widget.ArrayAdapter;
 
 public class ListHourEntries extends ListActivity {
@@ -29,7 +30,9 @@ public class ListHourEntries extends ListActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		Log.d(TAG, "ListHourEntries onCreate called.");
+		requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
 		setContentView(R.layout.hours_list);
+		getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.activity_title);
 		Intent hoursListIntent = getIntent();
 		if(hoursListIntent == null) {
 			showDialog(DIALOG_ID_INTENT_NULL);

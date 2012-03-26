@@ -11,6 +11,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
@@ -47,7 +48,9 @@ public class MobiseveraSelectWorktype extends Activity implements OnItemSelected
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
         setContentView(R.layout.select_worktype_layout);
+        getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.activity_title);
         Log.d(TAG,"OnCreate called on MobiseveraSelectphase Activity!");
         if(MobiseveraCommsUtils.checkIfConnected(this) == false) {
 			showDialog(NOT_CONNECTED_DIALOG_ID);

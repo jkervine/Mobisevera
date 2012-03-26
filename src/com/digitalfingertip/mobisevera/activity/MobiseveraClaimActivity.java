@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -95,7 +96,9 @@ public class MobiseveraClaimActivity extends Activity implements OnClickListener
 	protected void onCreate(Bundle savedInstanceState) {
 		Log.d(TAG,"OnCreate called on MobiseveraClaimActivity");
 		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
 		setContentView(R.layout.main_claim);
+		getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.activity_title);
 		if(savedInstanceState == null) {
 			Log.d(TAG,"Instance state is null, recreating activity.");
 		} else {
