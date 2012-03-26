@@ -33,6 +33,7 @@
     <string name="navi_main_claim_phase">Vaihe [%STRING]</string>
     <string name="navi_main_claim_worktype">Työtyyppi [%STRING]</string>
     <string name="navi_main_claim_description">Kuvaus [%STRING]</string>
+    <string name="claim_description_hint">Anna kuvaus</string>
     
     <string name="hour_label">h</string>
 	<string name="minute_label">min</string>

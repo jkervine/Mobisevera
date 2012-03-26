@@ -12,6 +12,7 @@ import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TimePicker;
 
@@ -51,7 +52,13 @@ public class MobiseveraClaimActivity extends Activity implements OnClickListener
 	private static final int DESCRIPTION_NAVI_INDEX = 3;
 	private static final int DIALOG_ID_SELECT_PROJECT_BEFORE_PHASE = 0;
 	private static final int DIALOG_ID_SELECT_PHASE_BEFORE_WORKTYPE = 1;
-	
+	// Parcel id's for saving instance state
+	protected static final String CASEITEMLIST_PARCEL_ID = "caseItemParcelID";
+	protected static final String PHASEITEMLIST_PARCEL_ID = "phaseItemParcelID";
+	protected static final String WORKTYPEITEMLIST_PARCEL_ID = "workTypeItemParcelID";
+	protected static final String DESCRIPTION_PARCEL_ID = "descriptionParcelID";
+	protected static final String HOUR_PARCEL_ID = "hourParcelID";
+	protected static final String MINUTE_PARCEL_ID = "minuteParcelID";
 	/**
 	 * Current hour as selected by the user for claiming 
 	 */
@@ -61,20 +68,48 @@ public class MobiseveraClaimActivity extends Activity implements OnClickListener
 	 */
 	private int mMinute = 0;
 	
-
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		Log.d(TAG,"OnCreate called on MobiseveraClaimActivity");
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main_claim);
+		if(savedInstanceState == null) {
+			Log.d(TAG,"Instance state is null, recreating activity.");
+		} else {
+			Log.d(TAG,"Instance state not, null, unparcelling.");
+			this.selectedCase = (S3CaseItem)savedInstanceState.get(CASEITEMLIST_PARCEL_ID);
+			this.selectedPhase = (S3PhaseItem)savedInstanceState.get(PHASEITEMLIST_PARCEL_ID);
+			this.selectedWorkType = (S3WorkTypeItem)savedInstanceState.get(WORKTYPEITEMLIST_PARCEL_ID);
+			this.selectedDescription = (String)savedInstanceState.getString(DESCRIPTION_PARCEL_ID);
+			this.mHour = (int)savedInstanceState.getInt(HOUR_PARCEL_ID);
+			this.mMinute = (int)savedInstanceState.getInt(MINUTE_PARCEL_ID);
+		}
 		TimePicker claimTimePicker = (TimePicker)findViewById(R.id.claimTimePicker);
 		Button showHourWidgetButton = (Button)findViewById(R.id.showHourWidgetButton);
+		EditText descEditText = (EditText)findViewById(R.id.descriptionEditText);
+		descEditText.setVisibility(View.GONE);
 		moveTimeFromPickerToButton(mHour, mMinute);
 		showHourWidgetButton.setOnClickListener(this);
 		claimTimePicker.setIs24HourView(true);
 		claimTimePicker.setVisibility(View.GONE);
         updateNaviTitles();		
 	}
+	
+	
+
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		outState.putParcelable(CASEITEMLIST_PARCEL_ID, selectedCase);
+		outState.putParcelable(PHASEITEMLIST_PARCEL_ID, selectedPhase);
+		outState.putParcelable(WORKTYPEITEMLIST_PARCEL_ID, selectedWorkType);
+		outState.putString(DESCRIPTION_PARCEL_ID, selectedDescription);
+		outState.putInt(HOUR_PARCEL_ID,mHour);
+		outState.putInt(MINUTE_PARCEL_ID,mMinute);
+		super.onSaveInstanceState(outState);
+	}
+
+
 
 	@Override
 	protected void onPause() {
@@ -185,6 +220,21 @@ public class MobiseveraClaimActivity extends Activity implements OnClickListener
 				return;
 			}
 			newIntent.putExtra(MobiseveraConstants.GUID_PARAMETER_EXTRA_ID, selectedPhase.getPhaseGUID());
+		} else if(position == DESCRIPTION_NAVI_INDEX) {
+			EditText editor = (EditText)findViewById(R.id.descriptionEditText);
+			int editorVisibility = editor.getVisibility();
+			if(editorVisibility == View.GONE) {
+				Log.d(TAG,"Making edittext visible");
+				editor.setVisibility(View.VISIBLE);
+				editor.requestFocus();
+				return;
+			} else if(editorVisibility == View.VISIBLE) {
+				this.selectedDescription = editor.getText().toString();
+				Log.d(TAG,"Making edittext gone");
+				editor.setVisibility(View.GONE);
+				updateNaviTitles();
+				return;
+			}
 		}
 		Log.d(TAG,"Launching new activity with class: "+newIntent.getClass()+" with request code: "+requestCode);
 		startActivityForResult(newIntent,requestCode);
