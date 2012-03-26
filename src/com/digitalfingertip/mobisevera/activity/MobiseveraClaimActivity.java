@@ -194,9 +194,7 @@ public class MobiseveraClaimActivity extends Activity implements OnClickListener
 			}
 			String phaseGuid = selectedPhase.getPhaseGUID();
 			
-			String hours = ((EditText)findViewById(R.id.hours_amount)).getText().toString();
-			String minutes = ((EditText)findViewById(R.id.minutes_amount)).getText().toString();
-			String quantity = hours+"."+Math.round((Integer.parseInt(minutes))/0.6);
+			String quantity = mHour+"."+Math.round((mMinute)/0.6);
 			if(quantity == null || quantity.isEmpty()) {
 				showDialog(DIALOG_ID_BAD_HOURS_QUANTITY);
 				return;
