@@ -417,6 +417,7 @@ public class MobiseveraClaimActivity extends Activity implements OnClickListener
 			S3PhaseItem phaseItem = (S3PhaseItem)data.getParcelableExtra(MobiseveraConstants.PHASE_PARCEL_EXTRA_ID);
 			if(phaseItem != null) {
 				this.selectedPhase=phaseItem;
+				this.selectedWorkType=null;
 				updateNaviTitles();
 			} else {
 				Log.e(TAG,"Got null phase bean from the intent.");
@@ -427,6 +428,8 @@ public class MobiseveraClaimActivity extends Activity implements OnClickListener
 				S3CaseItem caseItem = (S3CaseItem)data.getParcelableExtra(MobiseveraConstants.CASE_PARCEL_EXTRA_ID);
 				if(caseItem != null) {
 					this.selectedCase=caseItem;
+					this.selectedPhase=null;
+					this.selectedWorkType=null;
 					updateNaviTitles();
 				} else {
 					Log.e(TAG,"Got null case bean from the intent.");
