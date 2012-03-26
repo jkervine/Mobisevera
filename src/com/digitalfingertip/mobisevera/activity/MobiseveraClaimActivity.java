@@ -408,6 +408,10 @@ public class MobiseveraClaimActivity extends Activity implements OnClickListener
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		Log.d(TAG,"onActivityResult of MobiseveraClaimActivity called! request: "+requestCode+" result:"+resultCode);
 		super.onActivityResult(requestCode, resultCode, data);
+		if(data == null) {
+			Log.d(TAG, "Result is null, user probably returned from selector using back button.");
+			return;
+		}
 		if(requestCode == MobiseveraNaviContainer.REQUEST_CODE_GET_PHASE) {
 			Log.d(TAG,"Get phase:");
 			S3PhaseItem phaseItem = (S3PhaseItem)data.getParcelableExtra(MobiseveraConstants.PHASE_PARCEL_EXTRA_ID);
