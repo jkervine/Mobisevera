@@ -3,11 +3,21 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
+	<LinearLayout android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal" >
+   
     <Button
         android:id="@+id/showHourWidgetButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Button" />
+    <Button
+        android:id="@+id/submitClaimButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/submit_button_claim_text" />
+    </LinearLayout>
     <TimePicker
         android:id="@+id/claimTimePicker"
         android:layout_width="wrap_content"

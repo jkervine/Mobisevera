@@ -14,8 +14,7 @@
     <string name="claim_phasename_text">Project task</string>
     <string name="claim_explanation_text">Work description</string>
     <string name="claim_worktype_text">Work type</string>
-    <string name="claim_button_regular_text">Claim</string>
-    <string name="claim_button_overtime_text">Claim overtime</string>
+    <string name="submit_button_claim_text">Valmis</string>
     <string name="claim_change_date_button_text">Change date</string>
     <string name="menuitem_options">Options</string>
     <string name="amount_minutes_text">Minutes</string>
@@ -45,4 +44,12 @@
 	<!-- strings for dialogs -->
 	<string name = "dialog_text_select_phase_before_worktype">Työvaihe pitää valita ennen työtyyppiä</string>
 	<string name = "dialog_text_select_project_before_phase">Projekti pitää valita ennen työvaihetta</string>
+	<string name = "dialog_text_hours_publish_failed">Kirjaus epäonnistui, pahoittelut. Tarkista kentät ja yritä uudelleen.</string>
+	<string name = "dialog_text_hours_publish_ok">Tuntien kirjaus onnistui!</string>
+	<string name = "dialog_text_missing_description">Tuntimerkinnältä puuttuu selitys</string>
+	<string name = "dialog_text_bad_event_date">Päivämäärä on virheellinen</string>
+	<string name = "dialog_text_missing_phase_guid">Työvaiheen tunniste on virheellinen</string>
+	<string name = "dialog_text_bad_hours_quantity">Tuntien lukumäärä on virheellinen</string>
+	<string name = "dialog_text_bad_used_guid">Käyttäjän tunniste on virheellinen</string>
+	<string name = "dialog_text_bad_worktype_guid">Työtyypin tunniste on virheellinen</string>
 </resources>

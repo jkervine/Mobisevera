@@ -43,7 +43,8 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 /**
- * The main activity for the application
+ * The main activity for the application - THIS IS RETIRED and used only for reference. New main
+ * is the MobiseveraFrontPageActivity!
  * TODO: Split this into multiple source files, too long now
  * Logcat: logcat Sevedroid:V *:S
  * @author juha
@@ -212,8 +213,8 @@ public class MobiseveraProjectActivity extends Activity implements OnItemSelecte
         (findViewById(R.id.button9hour)).setOnClickListener(this);
         (findViewById(R.id.button10hour)).setOnClickListener(this);
         (findViewById(R.id.buttonplus30min)).setOnClickListener(this);
-        (findViewById(R.id.button_claim)).setOnClickListener(this);
-        (findViewById(R.id.button_claim_overtime)).setOnClickListener(this);
+        //(findViewById(R.id.button_claim)).setOnClickListener(this);
+        //(findViewById(R.id.button_claim_overtime)).setOnClickListener(this);
         (findViewById(R.id.change_date_button)).setOnClickListener(this);
         projectNameSpinner = (Spinner)findViewById(R.id.projectnamespinner);
         projectPhaseSpinner = (Spinner)findViewById(R.id.phasenamespinner);
@@ -501,7 +502,7 @@ public class MobiseveraProjectActivity extends Activity implements OnItemSelecte
 					}
 				}
 				break;
-			case R.id.button_claim_overtime:
+			/*case R.id.button_claim_overtime:
 			case R.id.button_claim:
 				if(MobiseveraCommsUtils.checkIfConnected(this) == false) {
 					showDialog(NOT_CONNECTED_DIALOG_ID);
@@ -547,7 +548,7 @@ public class MobiseveraProjectActivity extends Activity implements OnItemSelecte
 				}
 				String [] params = {description, eventDate, phaseGuid, quantity, userGuid, workTypeGuid};
 				new PublishHourEntryTask(this).execute(params);
-				break;
+				break;*/
 			case R.id.change_date_button:
 				Log.d(TAG, "Change claim date...");
 				showDialog(DATE_PICKER_DIALOG_ID);

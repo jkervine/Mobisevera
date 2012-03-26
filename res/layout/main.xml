@@ -54,8 +54,8 @@
 <TextView android:textAppearance="?android:attr/textAppearanceSmall" android:layout_height="wrap_content" android:text="@string/claim_explanation_text" android:layout_width="wrap_content" android:id="@+id/textViewExplanationtitle"></TextView>
 <EditText android:id="@+id/explanation_text" android:layout_height="wrap_content" android:layout_width="match_parent"/>
 <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:id="@+id/linearLayout2">
-    <Button android:layout_height="wrap_content" android:id="@+id/button_claim" android:text="@string/claim_button_regular_text" android:layout_width="wrap_content"></Button>
-    <Button android:layout_height="wrap_content" android:id="@+id/button_claim_overtime" android:text="@string/claim_button_overtime_text" android:layout_width="wrap_content"></Button>
+    <!-- <Button android:layout_height="wrap_content" android:id="@+id/button_claim" android:text="@string/claim_button_regular_text" android:layout_width="wrap_content"></Button>
+    <Button android:layout_height="wrap_content" android:id="@+id/button_claim_overtime" android:text="@string/claim_button_overtime_text" android:layout_width="wrap_content"></Button> -->
     <Button android:text="@string/claim_change_date_button_text" android:id="@+id/change_date_button" android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
 </LinearLayout>
 </LinearLayout>
