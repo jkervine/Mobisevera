@@ -163,7 +163,7 @@ public class S3CaseContainer {
 		res.setCaseInternalName(internalNameNode.getTextContent());
 		return res;	
 	}
-	
+			
 	/**
 	 * Returns a case item, which can be used as a first element of the spinner,
 	 * displaying [select project].

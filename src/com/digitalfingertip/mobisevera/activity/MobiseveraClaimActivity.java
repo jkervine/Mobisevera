@@ -8,10 +8,12 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.View.OnClickListener;
@@ -20,6 +22,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -259,13 +262,18 @@ public class MobiseveraClaimActivity extends Activity implements OnClickListener
 			break;
 		} 
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setMessage(message)
-			.setCancelable(false)
+		Log.d(TAG,"Building dialog with message:"+message);
+		LayoutInflater li = LayoutInflater.from(this);
+		View alertLayoutView = li.inflate(R.layout.alert_dialog_layout,null);
+		TextView tv = (TextView)alertLayoutView.findViewById(R.id.alert_dialog_text_id);
+		tv.setText(message);
+		builder.setCancelable(false)
 			.setPositiveButton("OK", new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {
 					return;
 				}
 			});
+		builder.setView(alertLayoutView);
 		AlertDialog alert = builder.create();
 		return alert;	
 	}
