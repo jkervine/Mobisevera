@@ -2,6 +2,7 @@ package com.digitalfingertip.mobisevera;
 
 import com.digitalfingertip.mobisevera.activity.MobiseveraClaimActivity;
 import com.digitalfingertip.mobisevera.activity.MobiseveraConfig;
+import com.digitalfingertip.mobisevera.activity.MobiseveraFrontpageActivity;
 import com.digitalfingertip.mobisevera.activity.MobiseveraSelectPhase;
 import com.digitalfingertip.mobisevera.activity.MobiseveraSelectProject;
 import com.digitalfingertip.mobisevera.activity.MobiseveraSelectWorktype;
@@ -34,6 +35,9 @@ public class MobiseveraNaviContainer {
 	 */
 	public static final int MAIN_CLAIM_ACTIVITY = 2;
 	
+	private static int mSelectedStateActivity = -1;
+	private static int mSelectedStatePosition = -1;
+	
 	public static final int REQUEST_CODE_GET_PROJECT = 1;
 	public static final int REQUEST_CODE_GET_PHASE = 2;
 	public static final int REQUEST_CODE_GET_WORKTYPE = 3;
@@ -44,6 +48,46 @@ public class MobiseveraNaviContainer {
 	public static final int RESULT_CODE_PHASE_BEAN_LOADED = 103;
 	public static final int RESULT_CODE_WORKTYPE_BEAN_LOADED = 104;
 	
+	/**
+	 * For given activity ID, store the state that some particular position is currently to be expanded.
+	 * Navigation adapter uses this to know, which kind of icon to draw (arrow right or arrow down).
+	 * Remembers only the last setting, and caller must remember to clear the state if that is desired
+	 * @param activityID
+	 * @param position
+	 */
+	
+	public static void setExpandedState(final int activityID, final int position) {
+		Log.d(TAG,"activity ID:"+activityID);
+		if(activityID != NAVI_FRONT_ACTIVITY && activityID != MAIN_CLAIM_ACTIVITY) {
+			throw new IllegalArgumentException("Tried to set expandedstate to nonexistent Activity identifier!");
+		}
+		mSelectedStateActivity = activityID;
+		mSelectedStatePosition = position;
+	}
+	
+	/**
+	 * Returns true if the selected activityID and position has been set to be expanded.
+	 * @param activityID
+	 * @param position
+	 * @return
+	 */
+	
+	public static boolean isInExpandedState(final int activityID, final int position) {
+		if(activityID == mSelectedStateActivity && position == mSelectedStatePosition) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	/**
+	 * Clear the state settings for navigation elements.
+	 */
+	
+	public static void clearExpandedState() {
+		mSelectedStateActivity = -1;
+		mSelectedStatePosition = -1;
+	}
 	/**
 	 * 
 	 * @param context

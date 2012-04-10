@@ -80,6 +80,7 @@ public class MobiseveraClaimActivity extends Activity implements OnClickListener
 	protected static final String DESCRIPTION_PARCEL_ID = "descriptionParcelID";
 	protected static final String HOUR_PARCEL_ID = "hourParcelID";
 	protected static final String MINUTE_PARCEL_ID = "minuteParcelID";
+	
 	/**
 	 * Current hour as selected by the user for claiming 
 	 */
@@ -330,12 +331,15 @@ public class MobiseveraClaimActivity extends Activity implements OnClickListener
 			if(editorVisibility == View.GONE) {
 				Log.d(TAG,"Making edittext visible");
 				editor.setVisibility(View.VISIBLE);
+				MobiseveraNaviContainer.setExpandedState(MobiseveraNaviContainer.MAIN_CLAIM_ACTIVITY, position);
 				editor.requestFocus();
+				updateNaviTitles();
 				return;
 			} else if(editorVisibility == View.VISIBLE) {
 				this.selectedDescription = editor.getText().toString();
 				Log.d(TAG,"Making edittext gone");
 				editor.setVisibility(View.GONE);
+				MobiseveraNaviContainer.clearExpandedState();
 				updateNaviTitles();
 				return;
 			}

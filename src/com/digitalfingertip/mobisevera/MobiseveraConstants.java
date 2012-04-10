@@ -24,7 +24,7 @@ public class MobiseveraConstants {
 	public static final String PHASE_PARCEL_EXTRA_ID = "Phase_extra_id";
 	public static final String WORKTYPE_PARCEL_EXTRA_ID = "Worktype_extra_id";
 	public static final String GUID_PARAMETER_EXTRA_ID = "GUID_parameter_extra_id";
-	
+
 	public static final SimpleDateFormat S3_DATE_FORMATTER = new SimpleDateFormat("yyyy-MM-dd");
 	
 	public static final String SOAP_ACTION_GET_USER_BY_NAME = "http://soap.severa.com/IUser/GetUserByName";
