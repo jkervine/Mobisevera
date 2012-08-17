@@ -207,10 +207,17 @@ public class MobiseveraSelectProject extends Activity implements OnItemSelectedL
 		Log.d(TAG,"Received project loading ready event on UI thread...");
 		Log.d(TAG,"Here, length of loaded projects list: "+projectList.size());
 		//append [select] as the first item
-		projectList.add(0, S3CaseContainer.getEmptySelectorElement(this));
-		projectSpinnerRefreshHack();
-		Toast.makeText(this, "Projects are now loaded, you can now make your selection.", Toast.LENGTH_SHORT).show();
-		projectsProgress.setVisibility(View.GONE);
+		if(projectList.size() == 0) {
+			Toast.makeText(this, "You haven't got access to any projects. Please contact your Severa responsible person.",
+					Toast.LENGTH_LONG).show();
+			this.setResult(MobiseveraNaviContainer.RESULT_CODE_ZERO_PROJECTS_LOADED);
+			this.finish();
+		} else {
+			projectList.add(0, S3CaseContainer.getEmptySelectorElement(this));
+			projectSpinnerRefreshHack();
+			Toast.makeText(this, "Projects are now loaded, you can now make your selection.", Toast.LENGTH_SHORT).show();
+			projectsProgress.setVisibility(View.GONE);
+		}
 	}
 	
 	/**

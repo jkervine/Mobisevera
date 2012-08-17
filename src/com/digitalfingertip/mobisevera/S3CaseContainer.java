@@ -84,6 +84,11 @@ public class S3CaseContainer {
 		setCasesXML(xmlForCase);
 	}
 	
+	/**
+	 * Get a list of all cases (or projects) which are available to the user
+	 * @return
+	 */
+	
 	public ArrayList<S3CaseItem> getCases() {
 		NodeList accountNodes = null;
 		NodeList internalNameNodes = null;

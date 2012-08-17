@@ -47,6 +47,7 @@ public class MobiseveraNaviContainer {
 	public static final int RESULT_CODE_PROJECT_BEAN_LOADED = 102;
 	public static final int RESULT_CODE_PHASE_BEAN_LOADED = 103;
 	public static final int RESULT_CODE_WORKTYPE_BEAN_LOADED = 104;
+	public static final int RESULT_CODE_ZERO_PROJECTS_LOADED = 105;
 	
 	/**
 	 * For given activity ID, store the state that some particular position is currently to be expanded.

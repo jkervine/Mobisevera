@@ -186,33 +186,33 @@ public class MobiseveraClaimActivity extends Activity implements OnClickListener
 			}
 			//TODO: Critical: Should check that user does not try to claim to inactive cases/phases/work types!
 			String description = selectedDescription;
-			if(description == null || description.isEmpty()) {
+			if(description == null || description.length() == 0) {
 				showDialog(DIALOG_ID_MISSING_DESCRIPTION);
 				return;
 			}
 			Calendar claimDate = Calendar.getInstance();
 			String eventDate = MobiseveraConstants.S3_DATE_FORMATTER.format(claimDate.getTime());
-			if(eventDate == null || eventDate.isEmpty()) {
+			if(eventDate == null || eventDate.length() == 0) {
 				showDialog(DIALOG_ID_BAD_EVENT_DATE);
 				return;
 			}
-			if(selectedPhase == null || selectedPhase.getPhaseGUID() == null || selectedPhase.getPhaseGUID().isEmpty()) {
+			if(selectedPhase == null || selectedPhase.getPhaseGUID() == null || selectedPhase.getPhaseGUID().length() == 0) {
 				showDialog(DIALOG_ID_MISSING_PHASE_GUID);
 				return;
 			}
 			String phaseGuid = selectedPhase.getPhaseGUID();
 			String quantity = mHour+"."+Math.round((mMinute)/0.6);
-			if(quantity == null || quantity.isEmpty()) {
+			if(quantity == null || quantity.length() == 0) {
 				showDialog(DIALOG_ID_BAD_HOURS_QUANTITY);
 				return;
 			}
 			MobiseveraContentStore scs = new MobiseveraContentStore(this);
 			String userGuid = scs.fetchUserGUID();
-			if(userGuid == null || userGuid.isEmpty()) {
+			if(userGuid == null || userGuid.length() == 0) {
 				showDialog(DIALOG_ID_BAD_USER_GUID);
 				return;
 			}
-			if(selectedWorkType == null || selectedWorkType.getWorkTypeGUID() == null || selectedWorkType.getWorkTypeGUID().isEmpty()) {
+			if(selectedWorkType == null || selectedWorkType.getWorkTypeGUID() == null || selectedWorkType.getWorkTypeGUID().length() == 0) {
 				showDialog(DIALOG_ID_BAD_WORKTYPE_GUID);
 				return;
 			}
@@ -423,9 +423,9 @@ public class MobiseveraClaimActivity extends Activity implements OnClickListener
 		Log.d(TAG,"onActivityResult of MobiseveraClaimActivity called! request: "+requestCode+" result:"+resultCode);
 		super.onActivityResult(requestCode, resultCode, data);
 		if(data == null) {
-			Log.d(TAG, "Result is null, user probably returned from selector using back button.");
-			return;
+			Log.d(TAG, "Result is null, user probably returned from selector using back button or there is a server problem.");
 		}
+		//Note: data may remain null, so check for result codes!
 		if(requestCode == MobiseveraNaviContainer.REQUEST_CODE_GET_PHASE) {
 			Log.d(TAG,"Get phase:");
 			S3PhaseItem phaseItem = (S3PhaseItem)data.getParcelableExtra(MobiseveraConstants.PHASE_PARCEL_EXTRA_ID);
@@ -438,6 +438,10 @@ public class MobiseveraClaimActivity extends Activity implements OnClickListener
 				return;
 			}
 		} else if(requestCode == MobiseveraNaviContainer.REQUEST_CODE_GET_PROJECT) {
+			if(resultCode == MobiseveraNaviContainer.RESULT_CODE_ZERO_PROJECTS_LOADED) {
+				Log.d(TAG,"Seems like we got zero projects loaded, just return.");
+				return;
+			}
 			Log.d(TAG,"Get project:");
 				S3CaseItem caseItem = (S3CaseItem)data.getParcelableExtra(MobiseveraConstants.CASE_PARCEL_EXTRA_ID);
 				if(caseItem != null) {
