@@ -195,4 +195,8 @@ public class MobiseveraContentStore {
 			return userGuid;
 		}
 	}
+	
+	//TODO: Plan caching for lists loaded from severa
+	
+	
 }

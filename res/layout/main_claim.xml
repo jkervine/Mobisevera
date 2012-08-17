@@ -35,6 +35,8 @@
 	    android:background="#C8E9F2"
 	    android:minLines="1"
 	    android:maxLines="2"
+	    android:padding="5dip"
+	    android:layout_margin="3dip"
 	    android:hint="@string/claim_description_hint">
 	</EditText>	
 </LinearLayout>

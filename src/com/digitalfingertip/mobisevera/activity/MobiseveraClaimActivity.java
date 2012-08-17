@@ -179,11 +179,12 @@ public class MobiseveraClaimActivity extends Activity implements OnClickListener
 				return;
 		} else if(v.getId() == R.id.submitClaimButton) {
 			Log.d(TAG,"Starting to publish hours.");
+			//TODO: Put a spinner to make clear when the publish is in progress
 			if(MobiseveraCommsUtils.checkIfConnected(this) == false) {
 				showDialog(DIALOG_ID_NOT_CONNECTED);
 				return;
 			}
-			//TODO:Critical: Should check that user does not try to claim to inactive cases/phases/work types!
+			//TODO: Critical: Should check that user does not try to claim to inactive cases/phases/work types!
 			String description = selectedDescription;
 			if(description == null || description.isEmpty()) {
 				showDialog(DIALOG_ID_MISSING_DESCRIPTION);
@@ -200,7 +201,6 @@ public class MobiseveraClaimActivity extends Activity implements OnClickListener
 				return;
 			}
 			String phaseGuid = selectedPhase.getPhaseGUID();
-			
 			String quantity = mHour+"."+Math.round((mMinute)/0.6);
 			if(quantity == null || quantity.isEmpty()) {
 				showDialog(DIALOG_ID_BAD_HOURS_QUANTITY);
@@ -326,6 +326,7 @@ public class MobiseveraClaimActivity extends Activity implements OnClickListener
 			}
 			newIntent.putExtra(MobiseveraConstants.GUID_PARAMETER_EXTRA_ID, selectedPhase.getPhaseGUID());
 		} else if(position == DESCRIPTION_NAVI_INDEX) {
+			//TODO:Check why expaning the editor does not allowscreen to scroll. (i.e. impossible to use in landscape)
 			EditText editor = (EditText)findViewById(R.id.descriptionEditText);
 			int editorVisibility = editor.getVisibility();
 			if(editorVisibility == View.GONE) {
