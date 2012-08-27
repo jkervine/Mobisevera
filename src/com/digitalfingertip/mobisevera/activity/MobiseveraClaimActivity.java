@@ -425,7 +425,10 @@ public class MobiseveraClaimActivity extends Activity implements OnClickListener
 		if(data == null) {
 			Log.d(TAG, "Result is null, user probably returned from selector using back button or there is a server problem.");
 		}
-		//Note: data may remain null, so check for result codes!
+		if(resultCode == MobiseveraNaviContainer.RESULT_CODE_NO_RESULT_SPECIFIED && data == null) {
+			Log.d(TAG,"Subactivity returned with no explicit result and with no data. Leavinh result unprocessed just to be sure.");
+			return;
+		}
 		if(requestCode == MobiseveraNaviContainer.REQUEST_CODE_GET_PHASE) {
 			Log.d(TAG,"Get phase:");
 			S3PhaseItem phaseItem = (S3PhaseItem)data.getParcelableExtra(MobiseveraConstants.PHASE_PARCEL_EXTRA_ID);
